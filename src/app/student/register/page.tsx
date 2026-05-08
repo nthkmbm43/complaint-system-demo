@@ -1,24 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import ModalAlert from "@/components/ModalAlert";
-
-interface OrgUnit {
-  Unit_id: number;
-  Unit_name: string;
-  Unit_type: string;
-  Unit_icon?: string;
-  Unit_parent_id?: number;
-}
+import { FACULTIES } from "@/data/units";
 
 export default function StudentRegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [unitsLoading, setUnitsLoading] = useState(true);
-  const [units, setUnits] = useState<OrgUnit[]>([]);
   const [msg, setMsg] = useState({ type: "" as any, title: "", text: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -32,22 +23,8 @@ export default function StudentRegisterPage() {
     email: "",
   });
 
-  useEffect(() => {
-    fetch("/api/public/units")
-      .then(r => r.json())
-      .then(data => {
-        setUnits(data.units || []);
-        setUnitsLoading(false);
-      })
-      .catch(() => {
-        setMsg({ type: "error", title: "ข้อผิดพลาด", text: "ไม่สามารถโหลดข้อมูลคณะ/สาขาได้" });
-        setUnitsLoading(false);
-      });
-  }, []);
-
-  const faculties = useMemo(() => units.filter(u => u.Unit_type === 'faculty'), [units]);
-  const selectedFacultyId = useMemo(() => units.find(f => f.Unit_name === form.faculty)?.Unit_id, [units, form.faculty]);
-  const availableMajors = useMemo(() => units.filter(u => u.Unit_type === 'major' && u.Unit_parent_id === selectedFacultyId), [units, selectedFacultyId]);
+  const faculties = FACULTIES;
+  const availableMajors = FACULTIES.find(f => f.name === form.faculty)?.majors || [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,13 +109,6 @@ export default function StudentRegisterPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              {unitsLoading ? (
-                <div className="py-20 text-center space-y-4">
-                  <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto" />
-                  <p className="text-slate-400 text-xs font-black uppercase tracking-widest">กำลังซิงค์ข้อมูลหน่วยงาน...</p>
-                </div>
-              ) : (
-                <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Student ID *</label>
@@ -161,7 +131,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <select value={form.faculty} onChange={(e) => setForm({ ...form, faculty: e.target.value, major: "" })} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none">
                           <option value="">เลือกคณะ...</option>
-                          {faculties.map(f => <option key={f.Unit_id} value={f.Unit_name}>{f.Unit_icon} {f.Unit_name}</option>)}
+                          {faculties.map(f => <option key={f.id} value={f.name}>{f.name}</option>)}
                         </select>
                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                       </div>
@@ -171,7 +141,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <select value={form.major} onChange={(e) => setForm({ ...form, major: e.target.value })} required disabled={!form.faculty} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none disabled:opacity-40">
                           <option value="">เลือกสาขาวิชา...</option>
-                          {availableMajors.map(m => <option key={m.Unit_id} value={m.Unit_name}>{m.Unit_icon} {m.Unit_name}</option>)}
+                          {availableMajors.map(m => <option key={m} value={m}>{m}</option>)}
                         </select>
                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                       </div>
@@ -198,8 +168,6 @@ export default function StudentRegisterPage() {
                   <button type="submit" disabled={loading} className="w-full py-6 bg-slate-900 text-white font-black rounded-[2rem] shadow-2xl shadow-slate-900/30 hover:bg-slate-800 disabled:opacity-50 transition-all flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-[11px] mt-12">
                     {loading ? <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" /> : <><span>Complete Registration</span><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></>}
                   </button>
-                </>
-              )}
             </form>
           </div>
         </div>
