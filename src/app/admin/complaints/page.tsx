@@ -80,8 +80,8 @@ export default function AdminComplaintsPage() {
       const matchStatus = filterStatus === "all" || c.status === Number(filterStatus);
       const matchPriority = filterPriority === "all" || c.priority === Number(filterPriority);
       const matchType = filterType === "all" || c.type === Number(filterType);
-      const matchFaculty = filterFaculty === "all" || c.student?.faculty === filterFaculty;
-      const matchMajor = filterMajor === "all" || c.student?.major === filterMajor;
+      const matchFaculty = filterFaculty === "all" || (c.student as any)?.faculty === filterFaculty;
+      const matchMajor = filterMajor === "all" || (c.student as any)?.major === filterMajor;
 
       return matchSearch && matchStatus && matchPriority && matchType && matchFaculty && matchMajor;
     });
