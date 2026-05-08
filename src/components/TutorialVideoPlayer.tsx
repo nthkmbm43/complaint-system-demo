@@ -8,8 +8,6 @@ const STEPS = [
     title: "หน้าแรก — RMUTI Care",
     desc: "จุดเริ่มต้นการใช้งาน พร้อมคู่มือและระเบียบการที่ครบถ้วน",
     badge: "Landing Page",
-    icon: "🏠",
-    color: "from-orange-500 to-red-600",
   },
   {
     key: "login",
@@ -17,8 +15,6 @@ const STEPS = [
     title: "เข้าสู่ระบบนักศึกษา",
     desc: "ล็อกอินปลอดภัยด้วยรหัสนักศึกษาและรหัสผ่านส่วนตัว",
     badge: "Authentication",
-    icon: "🔐",
-    color: "from-indigo-500 to-blue-600",
   },
   {
     key: "dashboard",
@@ -26,8 +22,6 @@ const STEPS = [
     title: "Dashboard ภาพรวม",
     desc: "ติดตามทุกความเคลื่อนไหว สถิติ และสถานะคำร้องแบบ Real-time",
     badge: "Dashboard",
-    icon: "📊",
-    color: "from-slate-700 to-slate-900",
   },
   {
     key: "form",
@@ -35,8 +29,6 @@ const STEPS = [
     title: "ยื่นเรื่องร้องเรียน",
     desc: "แบบฟอร์มที่ใช้งานง่าย พร้อมระบบแนบหลักฐานและเลือกหมวดหมู่",
     badge: "Submission",
-    icon: "📝",
-    color: "from-blue-500 to-cyan-600",
   },
   {
     key: "detail",
@@ -44,8 +36,6 @@ const STEPS = [
     title: "ติดตามสถานะคำร้อง",
     desc: "ตรวจสอบความคืบหน้า และแชทสอบถามเจ้าหน้าที่ได้โดยตรง",
     badge: "Tracking",
-    icon: "💬",
-    color: "from-green-500 to-emerald-600",
   },
 ];
 
@@ -82,134 +72,90 @@ export default function TutorialVideoPlayer() {
 
   return (
     <div className="lg:col-span-2 bg-slate-900 rounded-[3rem] overflow-hidden relative group aspect-video flex flex-col shadow-2xl">
-      {/* Visual Display (CSS Mockup instead of Image) */}
-      <div className="relative flex-1 overflow-hidden flex items-center justify-center bg-slate-950">
-        <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-20`} />
-        
-        {/* Animated Background Icons */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-           <div className="absolute top-10 left-10 text-6xl opacity-10 animate-bounce">{step.icon}</div>
-           <div className="absolute bottom-10 right-10 text-8xl opacity-5 transform rotate-12">{step.icon}</div>
-        </div>
+      {/* Screenshot Display */}
+      <div className="relative flex-1 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={step.key}
+          src={`/api/tutorial-step/${step.key}`}
+          alt={step.title}
+          className="w-full h-full object-cover object-top transition-opacity duration-500"
+        />
 
-        {/* Mockup UI Window */}
-        <div className="relative z-10 w-[80%] h-[70%] bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/20 animate-in zoom-in-95 duration-500">
-           {/* Browser Header */}
-           <div className="h-8 bg-slate-100 flex items-center px-4 gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-              <div className="ml-4 h-4 w-32 bg-slate-200 rounded-full" />
-           </div>
-
-           {/* Mockup Content */}
-           <div className="p-6 h-full flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white text-xl`}>
-                    {step.icon}
-                 </div>
-                 <div className="space-y-1.5 flex-1">
-                    <div className="h-3 w-1/3 bg-slate-200 rounded-full" />
-                    <div className="h-2 w-1/4 bg-slate-100 rounded-full" />
-                 </div>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-3">
-                 <div className="h-20 bg-slate-50 rounded-2xl border border-slate-100" />
-                 <div className="h-20 bg-slate-50 rounded-2xl border border-slate-100" />
-                 <div className="h-20 bg-slate-50 rounded-2xl border border-slate-100" />
-              </div>
-
-              <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-100 p-4 space-y-3">
-                 <div className="h-2 w-full bg-slate-200 rounded-full" />
-                 <div className="h-2 w-[90%] bg-slate-100 rounded-full" />
-                 <div className="h-2 w-[95%] bg-slate-100 rounded-full" />
-                 <div className="h-8 w-1/4 bg-slate-900 rounded-xl mt-4 self-end" />
-              </div>
-           </div>
-        </div>
+        {/* Dark overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30 pointer-events-none" />
 
         {/* Step Badge */}
-        <div className="absolute top-5 left-5 z-20">
-          <span className="bg-white/10 backdrop-blur text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/20 shadow-xl">
+        <div className="absolute top-5 left-5">
+          <span className="bg-orange-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
             {step.badge}
           </span>
         </div>
 
         {/* Step Counter */}
-        <div className="absolute top-5 right-5 z-20">
-          <span className="bg-slate-900 text-white text-[10px] font-black px-4 py-1.5 rounded-full border border-white/10">
+        <div className="absolute top-5 right-5">
+          <span className="bg-white/10 backdrop-blur text-white text-[10px] font-black px-3 py-1 rounded-full border border-white/20">
             {current + 1} / {STEPS.length}
           </span>
         </div>
 
         {/* Title + Desc */}
-        <div className="absolute bottom-16 left-0 right-0 px-10 z-20">
-          <p className="text-[10px] font-black text-orange-400 uppercase tracking-[0.3em] mb-2 animate-in slide-in-from-bottom-1">
+        <div className="absolute bottom-16 left-0 right-0 px-8">
+          <p className="text-[10px] font-black text-orange-400 uppercase tracking-[0.2em] mb-1">
             ขั้นตอนที่ {step.label}
           </p>
-          <h3 className="text-2xl font-black text-white drop-shadow-2xl animate-in slide-in-from-bottom-2">{step.title}</h3>
-          <p className="text-slate-400 text-sm mt-2 leading-relaxed max-w-xl animate-in slide-in-from-bottom-3">{step.desc}</p>
+          <h3 className="text-xl font-black text-white drop-shadow-lg">{step.title}</h3>
+          <p className="text-slate-300 text-xs mt-1 leading-relaxed">{step.desc}</p>
         </div>
 
-        {/* Progress Bar Container */}
-        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/5 z-20">
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
           <div
-            className={`h-full bg-gradient-to-r ${step.color} transition-all duration-100`}
+            className="h-full bg-gradient-to-r from-orange-500 to-indigo-500 transition-all duration-100"
             style={{ width: `${isPlaying ? progress : ((current + 1) / STEPS.length) * 100}%` }}
           />
         </div>
       </div>
 
-      {/* Controls Area */}
-      <div className="bg-slate-900/90 backdrop-blur-xl px-8 py-6 flex items-center gap-6 border-t border-white/5 relative z-30">
-        {/* Play/Pause */}
+      {/* Controls */}
+      <div className="bg-slate-800/80 backdrop-blur px-6 py-4 flex items-center gap-4 border-t border-white/5">
         <button
           onClick={() => setIsPlaying((p) => !p)}
-          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-2xl active:scale-90 ${
-             isPlaying ? "bg-white text-slate-900" : "bg-orange-500 text-white hover:bg-orange-400"
-          }`}
+          className="w-10 h-10 bg-orange-500 hover:bg-orange-400 rounded-full flex items-center justify-center transition-colors shadow-lg shrink-0"
         >
           {isPlaying ? (
-            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
           ) : (
-            <svg className="w-5 h-5 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg className="w-4 h-4 fill-white translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           )}
         </button>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-2">
-          <button onClick={prev} className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors border border-white/5 text-white active:scale-90">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-          
-          {/* Dots Indicator */}
-          <div className="flex gap-2 px-4">
-            {STEPS.map((s, i) => (
-              <button
-                key={s.key}
-                onClick={() => { setCurrent(i); setProgress(0); }}
-                className={`h-2 rounded-full transition-all duration-500 ${
-                  i === current ? "bg-orange-500 w-10 shadow-lg shadow-orange-500/20" : "bg-white/10 w-2 hover:bg-white/30"
-                }`}
-              />
-            ))}
-          </div>
+        <button onClick={prev} className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+          <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
 
-          <button onClick={next} className="w-10 h-10 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors border border-white/5 text-white active:scale-90">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"/></svg>
-          </button>
+        <div className="flex gap-1.5 flex-1">
+          {STEPS.map((s, i) => (
+            <button
+              key={s.key}
+              onClick={() => { setCurrent(i); setProgress(0); }}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === current ? "bg-orange-400 w-8" : "bg-white/20 hover:bg-white/40 w-4"
+              }`}
+            />
+          ))}
         </div>
 
-        <div className="flex-1" />
+        <button onClick={next} className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+          <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
 
-        {/* View Full Manual Link */}
         <a
           href="/manual"
-          className="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black text-white uppercase tracking-widest border border-white/5 transition-all flex items-center gap-2 group"
+          className="px-4 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-[9px] font-black text-white uppercase tracking-widest border border-white/5 transition-all flex items-center gap-2"
         >
-          <span>Open Manual</span>
-          <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>OPEN MANUAL</span>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
       </div>
     </div>

@@ -73,6 +73,58 @@ async function main() {
     },
   });
 
+  // 4. Create Organization Units (Faculties & Majors)
+  console.log('🏛️ Creating Organization Units...');
+  const units = [
+    { id: 1, name: 'คณะวิศวกรรมศาสตร์', type: 'faculty' },
+    { id: 2, name: 'วิศวกรรมคอมพิวเตอร์', type: 'major', parent: 1 },
+    { id: 3, name: 'วิศวกรรมไฟฟ้า', type: 'major', parent: 1 },
+    { id: 4, name: 'วิศวกรรมเครื่องกล', type: 'major', parent: 1 },
+    { id: 5, name: 'คณะบริหารธุรกิจและเทคโนโลยีสารสนเทศ', type: 'faculty' },
+    { id: 6, name: 'ระบบสารสนเทศทางธุรกิจ', type: 'major', parent: 5 },
+    { id: 7, name: 'การบัญชี', type: 'major', parent: 5 },
+    { id: 8, name: 'คณะครุศาสตร์อุตสาหกรรม', type: 'faculty' },
+    { id: 9, name: 'ครุศาสตร์โยธา', type: 'major', parent: 8 },
+  ];
+
+  for (const unit of units) {
+    await prisma.organizationUnit.upsert({
+      where: { Unit_id: unit.id },
+      update: {
+        Unit_name: unit.name,
+        Unit_type: unit.type,
+        Unit_parent_id: unit.parent || null
+      },
+      create: {
+        Unit_id: unit.id,
+        Unit_name: unit.name,
+        Unit_type: unit.type,
+        Unit_parent_id: unit.parent || null
+      }
+    });
+  }
+
+  // 5. Create Complaint Categories
+  console.log('📁 Creating Complaint Categories...');
+  const categories = [
+    { id: 1, label: 'ด้านการเรียนการสอน', icon: '📚', color: 'indigo' },
+    { id: 2, label: 'ด้านอาคารสถานที่', icon: '🏢', color: 'orange' },
+    { id: 3, label: 'ด้านสวัสดิการและทุนการศึกษา', icon: '💰', color: 'green' },
+    { id: 4, label: 'ด้านพฤติกรรมและการคุกคาม', icon: '🛡️', color: 'red' },
+    { id: 5, label: 'ด้านเทคโนโลยีและอินเทอร์เน็ต', icon: '💻', color: 'blue' },
+    { id: 6, label: 'ด้านการลงทะเบียนและเกรด', icon: '📝', color: 'amber' },
+    { id: 7, label: 'ด้านความปลอดภัยและจราจร', icon: '🚦', color: 'slate' },
+    { id: 8, label: 'ด้านอื่นๆ', icon: '✨', color: 'pink' }
+  ];
+
+  for (const cat of categories) {
+    await prisma.complaintCategory.upsert({
+      where: { id: cat.id },
+      update: { label: cat.label, icon: cat.icon, color: cat.color },
+      create: { id: cat.id, label: cat.label, icon: cat.icon, color: cat.color }
+    });
+  }
+
   console.log('✅ Demo Seeding Finished!');
   console.log('-----------------------------------');
   console.log('Demo Login Accounts (Password: 12345678):');
