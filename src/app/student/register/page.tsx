@@ -23,8 +23,8 @@ export default function StudentRegisterPage() {
     email: "",
   });
 
-  const faculties = FACULTIES;
-  const availableMajors = FACULTIES.find(f => f.name === form.faculty)?.majors || [];
+  const selectedFaculty = FACULTIES.find(f => f.name === form.faculty);
+  const availableMajors = selectedFaculty?.majors || [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,7 +131,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <select value={form.faculty} onChange={(e) => setForm({ ...form, faculty: e.target.value, major: "" })} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none">
                           <option value="">เลือกคณะ...</option>
-                          {faculties.map(f => <option key={f.id} value={f.name}>{f.name}</option>)}
+                          {FACULTIES.map(f => <option key={f.id} value={f.name}>{f.icon} {f.name}</option>)}
                         </select>
                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                       </div>
@@ -141,7 +141,7 @@ export default function StudentRegisterPage() {
                       <div className="relative">
                         <select value={form.major} onChange={(e) => setForm({ ...form, major: e.target.value })} required disabled={!form.faculty} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none disabled:opacity-40">
                           <option value="">เลือกสาขาวิชา...</option>
-                          {availableMajors.map(m => <option key={m} value={m}>{m}</option>)}
+                          {availableMajors.map(m => <option key={m.name} value={m.name}>{m.icon} {m.name}</option>)}
                         </select>
                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                       </div>
