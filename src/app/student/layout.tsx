@@ -13,6 +13,7 @@ const NAV_ITEMS: any[] = [
   { href: "/student/complaints/new", label: "สร้างแบบคำร้องใหม่", icon: "Plus" },
   { href: "/student/complaints", label: "ประวัติคำร้องของฉัน", icon: "List" },
   { href: "/student/profile", label: "โปรไฟล์ส่วนตัว", icon: "User" },
+  { href: "/student/manual", label: "คู่มือและระเบียบการ", icon: "BookOpen" },
 ];
 
 export default function StudentLayout({
