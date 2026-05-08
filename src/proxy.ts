@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/api") || pathname.includes(".")) {
@@ -9,9 +9,9 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    const token = await getToken({ 
-      req, 
-      secret: process.env.NEXTAUTH_SECRET || "rmuti-complaint-secret-2025" 
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET || "rmuti-complaint-secret-2025"
     });
 
     const publicRoutes = ["/", "/student/login", "/admin/login", "/student/register"];
@@ -34,14 +34,14 @@ export async function middleware(req: NextRequest) {
     }
 
     if (userType === "staff" && pathname.startsWith("/admin")) {
-       const adminPaths = ["/admin/staff", "/admin/students", "/admin/units", "/admin/settings", "/admin/users"];
-       if (adminPaths.some(p => pathname.startsWith(p)) && userRole < 3) {
-         return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-       }
-       const opPaths = ["/admin/reports", "/admin/complaints"];
-       if (opPaths.some(p => pathname.startsWith(p)) && userRole < 2) {
-         return NextResponse.redirect(new URL("/admin/assignments", req.url));
-       }
+      const adminPaths = ["/admin/staff", "/admin/students", "/admin/units", "/admin/settings", "/admin/users"];
+      if (adminPaths.some(p => pathname.startsWith(p)) && userRole < 3) {
+        return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+      }
+      const opPaths = ["/admin/reports", "/admin/complaints"];
+      if (opPaths.some(p => pathname.startsWith(p)) && userRole < 2) {
+        return NextResponse.redirect(new URL("/admin/assignments", req.url));
+      }
     }
 
     return NextResponse.next();
