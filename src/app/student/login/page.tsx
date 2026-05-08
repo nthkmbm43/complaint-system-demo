@@ -91,7 +91,7 @@ export default function StudentLoginPage() {
                   type="text"
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
-                  placeholder="เช่น 1234567890123"
+                  placeholder="กรอกชื่อผู้ใช้งาน"
                   required
                   className="w-full px-6 py-4.5 bg-slate-50 border border-slate-50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500 transition-all font-bold text-slate-700 placeholder:text-slate-300"
                 />
@@ -144,9 +144,6 @@ export default function StudentLoginPage() {
             </div>
           </div>
           
-          <div className="mt-8 p-6 bg-white/50 backdrop-blur-sm border border-white rounded-[2rem] text-[10px] font-bold text-slate-400 text-center shadow-sm">
-             <span className="text-slate-600">Testing:</span> 1234567890123 / password123
-          </div>
         </div>
       </div>
     </div>

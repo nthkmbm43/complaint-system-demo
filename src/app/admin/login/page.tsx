@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin / teacher / operator"
+                  placeholder="กรอกชื่อผู้ใช้งาน"
                   required
                   className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700"
                 />
@@ -138,9 +138,6 @@ export default function AdminLoginPage() {
 
           </div>
 
-          <div className="mt-8 p-6 bg-slate-800/50 backdrop-blur-md border border-white/5 rounded-[2rem] text-[10px] font-bold text-slate-400 leading-relaxed shadow-xl">
-             <span className="text-white">🔑 Quick Access:</span> admin / password123, teacher / password123.
-          </div>
         </div>
       </div>
     </div>

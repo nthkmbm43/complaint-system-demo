@@ -14,8 +14,10 @@ export async function proxy(req: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET || "rmuti-complaint-secret-2025"
     });
 
-    const publicRoutes = ["/", "/student/login", "/admin/login", "/student/register"];
+    const publicRoutes = ["/", "/student/login", "/admin/login", "/student/register", "/manual", "/student/manual"];
+    const authRoutes = ["/student/login", "/admin/login", "/student/register"];
     const isPublic = publicRoutes.some(r => pathname === r || pathname === `${r}/`);
+    const isAuthRoute = authRoutes.some(r => pathname === r || pathname === `${r}/`);
 
     if (!token) {
       if (isPublic) return NextResponse.next();
@@ -25,7 +27,8 @@ export async function proxy(req: NextRequest) {
     const userType = (token as any).type;
     const userRole = Number((token as any).role) || 0;
 
-    if (isPublic) {
+    // Only redirect to dashboard if they are on a login/register page
+    if (isAuthRoute) {
       return NextResponse.redirect(new URL(userType === "staff" ? "/admin/dashboard" : "/student/dashboard", req.url));
     }
 
