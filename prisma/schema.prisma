@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------
+// ระบบนักศึกษา (Student)
+// ------------------------------------
+model Student {
+  id        String   @id @default(cuid())
+  studentId String   @unique // รหัสนักศึกษา (ใช้สำหรับ Login หลัก)
+  password  String   // รหัสผ่าน (ผ่านการ Hash Bcrypt/Argon2)
+  name      String
+  email     String?  @unique
+  faculty   String?
+  major     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ความสัมพันธ์
+  complaints Complaint[]
+}
+
+// ------------------------------------
+// ระบบเจ้าหน้าที่และแอดมิน (Staff/Admin)
+// ------------------------------------
+model Staff {
+  id        String   @id @default(cuid())
+  username  String   @unique // รหัสเจ้าหน้าที่ หรือ Username
+  password  String   // รหัสผ่าน (ผ่านการ Hash)
+  name      String
+  email     String?  @unique // อีเมลเจ้าหน้าที่
+  role      Int      @default(1) // 1 = อาจารย์, 2 = ผู้ดำเนินการ, 3 = ผู้ดูแลระบบ (Admin)
+  faculty   String?  // คณะที่สังกัด
+  major     String?  // สาขาที่สังกัด
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ความสัมพันธ์ (เรื่องร้องเรียนที่อยู่ในความดูแล)
+  assignedComplaints Complaint[]
+  actionLogs         ComplaintHistory[]
+}
+
+// ------------------------------------
+// ข้อร้องเรียน (Complaint)
+// ------------------------------------
+model Complaint {
+  id          String   @id @default(cuid())
+  title       String   // หัวข้อ
+  description String   // รายละเอียดปัญหา
+  status      Int      @default(0) // 0=ยื่นคำร้อง, 1=กำลังดำเนินการ, 2=รอประเมิน, 3=เสร็จสิ้น, 4=ปฏิเสธ
+  priority    Int      @default(2) // 1=ไม่เร่งด่วน, 2=ปกติ, 3=เร่งด่วน, 4=เร่งด่วนมาก, 5=วิกฤต
+  isAnonymous Boolean  @default(false) // ระบุตัวตนหรือไม่
+  type        Int      // หมวดหมู่ 1-8
+  attachment  String?  // ไฟล์แนบ (PDF/Image) จากนักศึกษา
+
+  // ข้อมูลเกี่ยวกับผู้ยื่นและผู้ดูแล
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id])
+  assignedStaffId String?
+  assignedStaff   Staff?   @relation(fields: [assignedStaffId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ความสัมพันธ์
+  histories   ComplaintHistory[]
+  evaluation  Evaluation?
+}
+
+// ------------------------------------
+// ประวัติการเปลี่ยนสถานะ (Complaint History / Timestamps)
+// เพื่อให้แสตมป์เวลาการทำงานชัดเจนโดยไม่ต้องใช้กรอบ SLA
+// ------------------------------------
+model ComplaintHistory {
+  id           String    @id @default(cuid())
+  complaintId  String
+  complaint    Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  status       Int       // สถานะ ณ เวลานั้น
+  note         String?   // บันทึกเพิ่มเติมจากเจ้าหน้าที่
+  
+  actionById   String?   // ผู้ดำเนินการเปลี่ยนสถานะ (ถ้ามี)
+  actionBy     Staff?    @relation(fields: [actionById], references: [id])
+  
+  createdAt    DateTime  @default(now())
+}
+
+// ------------------------------------
+// การประเมินผล (Evaluation)
+// ------------------------------------
+model Evaluation {
+  id          String    @id @default(cuid())
+  complaintId String    @unique
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  
+  score       Int       // คะแนน 1-5
+  comment     String?   // ข้อเสนอแนะเพิ่มเติม
+  createdAt   DateTime  @default(now())
+}
+
+// ------------------------------------
+// ระบบแจ้งเตือน (Notification)
+// ------------------------------------
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String   // ID ของผู้รับ
+  userType    String   // "student" หรือ "staff"
+  title       String
+  message     String
+  link        String?  // ลิงก์ไปยังหน้ารายละเอียด
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model OrganizationUnit {
+  Unit_id        Int     @id
+  Unit_name      String
+  Unit_type      String  // faculty, major, department
+  Unit_icon      String?
+  Unit_parent_id Int?
+  Unit_tel       String?
+  Unit_email     String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ComplaintCategory {
+  id        Int      @id @default(autoincrement())
+  label     String
+  icon      String
+  color     String   @default("indigo")
+  bg        String   @default("bg-indigo-50")
+  text      String   @default("text-indigo-600")
+  border    String   @default("border-indigo-100")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

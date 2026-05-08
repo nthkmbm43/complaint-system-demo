@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ระบบข้อร้องเรียนออนไลน์ RMUTI (Next.js Edition)
 
-## Getting Started
+โปรเจคนี้เป็นการปรับปรุงจากระบบ PHP เดิม (Legacy) มาเป็นสแต็คเทคโนโลยีสมัยใหม่ เพื่อความรวดเร็วในการทำงานและเพิ่มความสวยงาม รวมทั้งเพิ่มประสิทธิภาพให้กับผู้ใช้อย่างเต็มระบบ
 
-First, run the development server:
+## 🛠️ โครงสร้างทางเทคโนโลยี (Tech Stack)
+- **Framework**: Next.js 15 (App Router Server Components)
+- **Styling**: Tailwind CSS
+- **Database**: SQLite (ผ่าน `prisma/dev.db`)
+- **ORM**: Prisma v6
+- **Auth**: NextAuth.js (แยกระบบ Credentials)
 
+---
+
+## 🔒 บทบาทและสิทธิการใช้งาน (Roles & Permissions)
+
+ระบบจำแนกผู้ใช้และสิทธิ์การทำงานอย่างชัดเจน 2 กลุ่มใหญ่ๆ:
+
+### 🎓 กลุ่มนักศึกษา (Student)
+- ลงทะเบียนเข้าสู่ระบบ / ลงชื่อเข้าใช้
+- **ยื่นเรื่องร้องเรียน** โดยส่งคำร้องตาม 8 หมวดหมู่
+- สามารถตั้งค่า "ไม่ระบุตัวตน" (Anonymous) สำหรับเคสที่เรื่องความอ่อนไหวสูง
+- ไม่สามารถตั้งค่า "ระดับความสำคัญ (Priority)" ของปัญหาได้เอง (ค่าเริ่มต้นจะเป็นระดับปกติ: 2)
+
+### 👮‍♂️ กลุ่มเจ้าหน้าที่ (Staff / Admin)
+- มีสิทธิ์ 3 ระดับการทำงาน: `1 - อาจารย์ที่ปรึกษา`, `2 - ผู้ดำเนินการ`, `3 - ผู้ดูแลระบบ`
+- **ผู้ดำเนินการ และ Admin**: เป็นผู้พิจารณาคำร้องและทำการ **กำหนดระดับความสำคัญ (Priority)** ของปัญหาด้วยตัวเองจากความเห็นและรูปการที่นักศึกษาส่งมา 
+- ปรับเปลี่ยนสถานะ และพิมพ์ข้อความลงในไทม์ไลน์ ตอบกลับให้นักศึกษาทราบความคืบหน้า
+- **ผู้ดูแลระบบ (Admin)**: เพิ่ม แจกจ่ายแอคเคาท์ ให้กับเจ้าหน้าที่คนอื่นๆ รวมทั้งออกรายงานสรุปสถิติต่างๆ
+
+---
+
+## 🔖 ลำดับสถานะของคำร้อง
+
+1. `สถานะ 0`: **ยื่นคำร้อง** (เริ่มแรกเข้าสู่ระบบ)
+2. `สถานะ 1`: **กำลังดำเนินการ** (แอดมินหรือเจ้าหน้าที่รับรู้อ่านแล้ว กำลังตามเรื่องให้)
+3. `สถานะ 2`: **รอประเมิน** (แก้ไขแล้ว ให้นักศึกษาประเมินตอบรับ)
+4. `สถานะ 3`: **เสร็จสิ้น** (แก้ไขปัญหาลุล่วงและจัดเก็บเข้าระบบถาวร)
+5. `สถานะ 4`: **ปฏิเสธ** (ยกเลิกเรื่องจากปัญหาบางประการ เช่น การสแปม ข้อความเท็จ)
+
+## ⚡ วิธีรันเซิร์ฟเวอร์แบบ Development
 ```bash
+npm install
+npx prisma generate
+npx prisma db push
+npx tsx prisma/seed.ts
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+หลังจากรันเสร็จสามารถเข้าทดสอบที่ `http://localhost:3000`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**บัญชีทดสอบที่สามารถใช้งานได้อัตโนมัติ:**
+- **Admin**: `admin` / `password123`
+- **Student**: `1234567890123` / `password123`

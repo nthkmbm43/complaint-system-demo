@@ -1,0 +1,1 @@
+Copy tutorial video to public folder
