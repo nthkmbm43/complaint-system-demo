@@ -52,7 +52,7 @@ export default function StudentLayout({
       <ToastHandler />
       
       <UnifiedSidebar 
-        brand={{ name: "RMUTICare", sub: "Student Portal", color: "bg-indigo-600" }}
+        brand={{ name: "RMUTI Complaint System", sub: "Student Portal", color: "bg-indigo-600" }}
         navItems={NAV_ITEMS}
         user={{
           name: userName,

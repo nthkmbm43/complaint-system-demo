@@ -87,7 +87,7 @@ export default function AdminLayout({
       <ToastHandler />
       
       <UnifiedSidebar 
-        brand={{ name: "RMUTIAdmin", sub: "Staff Portal", color: userRole === 3 ? "bg-slate-900" : "bg-indigo-600" }}
+        brand={{ name: "RMUTI Complaint System", sub: "Staff Portal", color: userRole === 3 ? "bg-slate-900" : "bg-indigo-600" }}
         navItems={navItems}
         user={{
           name: userName,

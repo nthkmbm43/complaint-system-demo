@@ -13,11 +13,14 @@ export default function Home() {
 
       {/* Modern Header */}
       <header className="relative z-20 container mx-auto px-6 py-10 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black italic shadow-2xl">R</div>
-          <div>
-            <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase">RMUTI<span className="text-orange-500">Care</span></span>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">ศูนย์รับเรื่องร้องเรียนนักศึกษา</p>
+        <div className="flex items-center gap-4 group">
+          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg border border-slate-100 group-hover:scale-110 transition-transform">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-10 h-10 object-contain" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black text-slate-800 tracking-tighter uppercase leading-none">RMUTI</span>
+            <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest mt-1">Complaint System</span>
           </div>
         </div>
         <div className="hidden md:flex gap-10 text-xs font-black text-slate-500 uppercase tracking-widest">
@@ -180,9 +183,15 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-20">
             <div className="max-w-md">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-900 font-black italic shadow-2xl">R</div>
-                <span className="text-xl font-black tracking-tighter uppercase">RMUTI<span className="text-orange-500">Care</span></span>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                   {/* eslint-disable-next-line @next/next/no-img-element */}
+                   <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-9 h-9 object-contain" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xl font-black tracking-tighter uppercase leading-none">RMUTI</span>
+                  <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest mt-1">Complaint System</span>
+                </div>
               </div>
               <p className="text-slate-400 leading-relaxed font-medium">
                 ศูนย์รับเรื่องร้องเรียนและบริการนักศึกษา มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตขอนแก่น มุ่งมั่นพัฒนาเพื่อสังคมที่ดีขึ้น

@@ -42,14 +42,16 @@ export default function StudentLoginPage() {
 
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-24 relative z-10">
         <div className="space-y-8 max-w-lg">
-          <div className="w-20 h-20 bg-orange-500 rounded-3xl flex items-center justify-center text-white font-black text-3xl shadow-2xl shadow-orange-500/40">
-            RC
+          <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl border border-slate-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
           </div>
           <h1 className="text-6xl font-black text-slate-800 leading-tight">
-            Your Voice <br /><span className="text-orange-500">Matters.</span>
+            RMUTI <br /><span className="text-orange-500">Complaint System</span>
           </h1>
           <p className="text-slate-500 text-lg font-medium leading-relaxed">
-            ระบบรับเรื่องร้องเรียนนักศึกษา มทร.อีสาน วิทยาเขตขอนแก่น พื้นที่ปลอดภัยสำหรับการรับฟังและร่วมกันแก้ไขปัญหาเพื่อสังคมคุณภาพ
+            ระบบรับเรื่องร้องเรียนและข้อเสนอแนะ มทร.อีสาน วิทยาเขตขอนแก่น <br />
+            <span className="text-sm font-bold text-slate-400">Digital Experience Portal for Students</span>
           </p>
           <div className="flex flex-wrap gap-8 pt-6">
             <div>

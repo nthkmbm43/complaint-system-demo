@@ -116,12 +116,11 @@ export default function UnifiedSidebar({
             <div className={`w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-lg shadow-lg`}>
               {brand.name.charAt(0)}
             </div>
-            <div className="hidden sm:block">
-              <span className="text-lg font-black text-slate-900 tracking-tighter uppercase">
-                {brand.name.substring(0, brand.name.length - 4)}
-                <span className="text-indigo-500">{brand.name.substring(brand.name.length - 4)}</span>
+            <div className="hidden sm:block leading-none">
+              <span className="text-lg font-black text-slate-800 tracking-tighter uppercase">
+                RMUTI <span className="text-indigo-500">Complaint System</span>
               </span>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{brand.sub}</p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">{brand.sub}</p>
             </div>
           </div>
         </div>
@@ -160,10 +159,10 @@ export default function UnifiedSidebar({
       >
         <div className="flex-none p-8 border-b border-white/5 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-black tracking-tighter uppercase">
-              RMUTI<span className="text-indigo-400">Care</span>
+            <h2 className="text-2xl font-black tracking-tighter uppercase leading-none">
+              RMUTI <br /><span className="text-indigo-400">Complaint System</span>
             </h2>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-1">{brand.sub}</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-2">{brand.sub}</p>
           </div>
           <button
             onClick={() => setIsOpen(false)}

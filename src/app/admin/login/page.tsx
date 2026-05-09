@@ -43,12 +43,17 @@ export default function AdminLoginPage() {
       </div>
 
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-20 relative z-10">
-        <div className="space-y-6 max-w-lg">
+        <div className="space-y-8 max-w-lg">
+          <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
+          </div>
           <h1 className="text-6xl font-black text-white leading-tight">
-            Managing with <span className="text-indigo-400">Excellence.</span>
+            RMUTI <br /><span className="text-indigo-400">Staff Portal.</span>
           </h1>
           <p className="text-slate-400 text-lg font-medium leading-relaxed">
-            ระบบจัดการเรื่องร้องเรียนสำหรับเจ้าหน้าที่และผู้ดูแลระบบ มทร.อีสาน วิทยาเขตขอนแก่น ยกระดับการให้บริการนักศึกษาอย่างยั่งยืน
+            ระบบจัดการเรื่องร้องเรียน RMUTI Complaint System สำหรับเจ้าหน้าที่ <br />
+            <span className="text-sm font-bold text-slate-500 italic">Advanced Administrative Experience</span>
           </p>
           <div className="flex gap-4 pt-10">
             <div className="p-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm">
