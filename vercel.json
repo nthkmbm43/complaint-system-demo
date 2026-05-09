@@ -2,9 +2,5 @@
   "version": 2,
   "framework": "nextjs",
   "installCommand": "npm install",
-  "buildCommand": "npx prisma generate && next build",
-  "env": {
-    "NEXTAUTH_URL": "https://your-domain.vercel.app",
-    "DATABASE_URL": "postgresql://user:password@neon-db-url:5432/db"
-  }
+  "buildCommand": "npx prisma generate && next build"
 }
