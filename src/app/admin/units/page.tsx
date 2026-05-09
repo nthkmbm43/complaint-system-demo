@@ -245,14 +245,13 @@ export default function AdminUnitsPage() {
         )}
       </div>
 
-      {/* Add/Edit Modal */}
       {showModal && (
         <div 
-          className="fixed inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center p-4 py-12"
           onClick={closeModal}
         >
           <div 
-            className="bg-white rounded-[3rem] w-full max-w-2xl p-8 md:p-12 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto relative"
+            className="relative bg-white rounded-[2.5rem] w-full max-w-2xl p-6 md:p-10 shadow-2xl h-fit my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-3xl font-black text-slate-900 mb-8">{editingUnit ? "แก้ไขหน่วยงาน" : "เพิ่มหน่วยงานใหม่"}</h3>

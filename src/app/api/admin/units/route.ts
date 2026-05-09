@@ -10,11 +10,18 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const units = await prisma.organizationUnit.findMany({
-    orderBy: [{ Unit_type: "asc" }, { Unit_id: "asc" }],
-  });
-
-  return NextResponse.json({ units });
+  try {
+    const units = await prisma.organizationUnit.findMany({
+      orderBy: [{ Unit_type: "asc" }, { Unit_id: "asc" }],
+    });
+    return NextResponse.json({ units });
+  } catch (error: any) {
+    console.error("Fetch Units API Error:", error);
+    return NextResponse.json({ 
+      error: `ไม่สามารถดึงข้อมูลหน่วยงานได้: ${error.message}`,
+      units: [] 
+    }, { status: 500 });
+  }
 }
 
 // POST /api/admin/units

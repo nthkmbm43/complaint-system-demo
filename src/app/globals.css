@@ -59,3 +59,24 @@ body {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* Modal UI Fixes */
+.modal-backdrop {
+  z-index: 1000 !important;
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.modal-content {
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  margin: auto !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Ensure form buttons aren't cut off */
+@media (max-height: 800px) {
+  .modal-content {
+    padding-bottom: 3rem !important;
+  }
+}
