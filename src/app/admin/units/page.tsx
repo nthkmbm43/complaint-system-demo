@@ -245,8 +245,14 @@ export default function AdminUnitsPage() {
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] w-full max-w-2xl p-12 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={closeModal}
+        >
+          <div 
+            className="bg-white rounded-[3rem] w-full max-w-2xl p-8 md:p-12 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-3xl font-black text-slate-900 mb-8">{editingUnit ? "แก้ไขหน่วยงาน" : "เพิ่มหน่วยงานใหม่"}</h3>
             
             <form onSubmit={handleSubmit} className="space-y-8">
