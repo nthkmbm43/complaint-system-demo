@@ -234,66 +234,63 @@ export default function AdminComplaintDetailPage() {
       {/* Assignment Modal */}
       {showAssignModal && (
         <div 
-          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/70 backdrop-blur-md flex justify-center p-4 py-12 md:py-20"
-          onClick={() => setShowAssignModal(false)}
+          className="fixed inset-0 z-[1000] bg-white overflow-y-auto flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-500"
         >
-          <div 
-            className="relative bg-white rounded-[3rem] w-full max-w-xl shadow-[0_20px_70px_-10px_rgba(0,0,0,0.5)] p-10 md:p-16 my-auto animate-in zoom-in-95 duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Elegant Header - Balanced Spacing */}
-            <div className="flex items-center justify-between mb-16">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center text-4xl shadow-sm border border-indigo-100">🛡️</div>
+          <div className="w-full max-w-4xl p-10 md:p-24 flex flex-col">
+            {/* Minimalist Clean Header */}
+            <div className="flex items-center justify-between mb-20">
+              <div className="flex items-center gap-8">
+                <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-sm border border-indigo-100/50">🛡️</div>
                 <div>
-                  <h3 className="text-4xl font-black text-slate-900 tracking-tight">มอบหมายงาน</h3>
-                  <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 ml-1">Case Assignment</p>
+                  <h3 className="text-5xl font-black text-slate-900 tracking-tighter">มอบหมายงาน</h3>
+                  <p className="text-base font-bold text-slate-400 uppercase tracking-[0.4em] mt-3 ml-1">Case Assignment Control</p>
                 </div>
               </div>
-              <button onClick={() => setShowAssignModal(false)} className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center border border-slate-100">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <button onClick={() => setShowAssignModal(false)} className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all border border-slate-100">
+                <span className="text-sm font-black uppercase tracking-widest">ปิดหน้านี้</span>
+                <svg className="w-6 h-6 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
              
-             <div className="space-y-12">
+             <div className="space-y-16">
                 <div className="space-y-4">
-                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">ระดับความเร่งด่วน</label>
+                   <label className="text-sm font-black text-slate-900 uppercase tracking-widest ml-1">ระดับความเร่งด่วน</label>
                    <div className="relative">
                      <select 
                        value={priorityUpdate} 
                        onChange={(e) => setPriorityUpdate(e.target.value)}
-                       className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-8 focus:ring-indigo-500/5 transition-all appearance-none text-lg"
+                       className="w-full px-8 py-6 bg-white border-2 border-slate-100 rounded-3xl font-bold text-slate-700 focus:outline-none focus:ring-12 focus:ring-indigo-500/5 transition-all appearance-none text-xl"
                      >
                        {Object.entries(PRIORITY_CONFIG).map(([v, {label}]) => <option key={v} value={v}>{label}</option>)}
                      </select>
-                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                     <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                    </div>
                 </div>
 
                 <div className="space-y-4">
-                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">มอบหมายให้เจ้าหน้าที่</label>
+                   <label className="text-sm font-black text-slate-900 uppercase tracking-widest ml-1">มอบหมายให้เจ้าหน้าที่</label>
                    <div className="relative">
                      <select 
                        value={assignedStaffId} 
                        onChange={(e) => setAssignedStaffId(e.target.value)}
-                       className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-8 focus:ring-indigo-500/5 transition-all appearance-none text-lg"
+                       className="w-full px-8 py-6 bg-white border-2 border-slate-100 rounded-3xl font-bold text-slate-700 focus:outline-none focus:ring-12 focus:ring-indigo-500/5 transition-all appearance-none text-xl"
                      >
                        <option value="">เลือกเจ้าหน้าที่...</option>
                        {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major || s.faculty})</option>)}
                      </select>
-                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                     <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
                    </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-6 pt-10">
-                   <button onClick={() => setShowAssignModal(false)} className="flex-1 py-6 bg-white border-2 border-slate-100 text-slate-500 font-black rounded-[2rem] hover:bg-slate-50 transition-all uppercase text-sm tracking-widest">ยกเลิก</button>
+                <div className="flex flex-col sm:flex-row gap-8 pt-10 border-t border-slate-50">
+                   <button onClick={() => setShowAssignModal(false)} className="flex-1 py-7 bg-white border-2 border-slate-100 text-slate-500 font-black rounded-[2.5rem] hover:bg-slate-50 hover:border-slate-200 transition-all uppercase text-sm tracking-widest">ยกเลิกและย้อนกลับ</button>
                    <button 
                      onClick={() => {
                        handleUpdate(undefined, { status: 1, priority: Number(priorityUpdate), assignedStaffId });
                        setShowAssignModal(false);
                      }}
                      disabled={!assignedStaffId}
-                     className="flex-[2] py-6 bg-indigo-600 text-white font-black rounded-[2rem] hover:bg-indigo-700 transition-all uppercase text-sm tracking-widest disabled:opacity-50 shadow-2xl shadow-indigo-600/30"
+                     className="flex-[2] py-7 bg-indigo-600 text-white font-black rounded-[2.5rem] hover:bg-indigo-700 transition-all uppercase text-sm tracking-widest disabled:opacity-50 shadow-2xl shadow-indigo-600/40"
                    >
                      ยืนยันและมอบหมายงาน
                    </button>
