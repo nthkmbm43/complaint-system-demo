@@ -113,21 +113,18 @@ export async function GET(req: NextRequest) {
     const role = user.role || 0;
     const { faculty, major } = user;
 
-    if (role === 1) {
+    if (role === 3) {
+      // แอดมิน (Role 3): เห็นทั้งหมด (where ว่าง)
+      console.log("Admin Access: Fetching all complaints");
+    } else if (role === 1) {
       // อาจารย์: ดูได้เฉพาะที่ได้รับมอบหมาย
       where.assignedStaffId = user.id;
     } else if (role === 2) {
       // เจ้าหน้าที่คณะ/สาขา: กรองตามสังกัด
       where.student = {};
       if (faculty) where.student.faculty = faculty;
-      
-      // กฎ: ถ้าเจ้าหน้าที่ลงสาขา ให้เห็นแค่สาขานั้น
-      // ถ้าเจ้าหน้าที่ไม่ลงสาขา (null) ให้เห็นทั้งคณะ
-      if (major) {
-        where.student.major = major;
-      }
+      if (major) where.student.major = major;
     }
-    // แอดมิน (Role 3): เห็นทั้งหมด (where ว่าง)
   }
 
   const complaints = await prisma.complaint.findMany({

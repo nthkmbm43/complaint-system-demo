@@ -54,8 +54,21 @@ export default function AdminAssignmentsPage() {
     <div className="space-y-6 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">งานที่ได้รับมอบหมาย</h2>
-          <p className="text-slate-500 text-sm mt-1">ภารกิจและข้อร้องเรียนที่คุณได้รับมอบหมายให้ดำเนินการ</p>
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-3xl font-black text-slate-800 tracking-tight">
+              {(session?.user as any).role === 3 ? "ตรวจสอบภารกิจทั้งหมด" : "งานที่ได้รับมอบหมาย"}
+            </h2>
+            {(session?.user as any).role === 3 && (
+              <span className="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest shadow-lg shadow-indigo-600/20">
+                System Oversight
+              </span>
+            )}
+          </div>
+          <p className="text-slate-500 text-sm">
+            {(session?.user as any).role === 3 
+              ? "ภาพรวมการดำเนินงานและสถานะข้อร้องเรียนของเจ้าหน้าที่ทุกคนในระบบ" 
+              : "ภารกิจและข้อร้องเรียนที่คุณได้รับมอบหมายให้ดำเนินการ"}
+          </p>
         </div>
       </div>
 

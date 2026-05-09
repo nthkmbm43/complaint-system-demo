@@ -2,16 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { FACULTIES } from "@/data/units";
 
-const DEFAULT_UNITS = [
-  { Unit_id: 100, Unit_name: "คณะวิศวกรรมศาสตร์และเทคโนโลยี", Unit_type: "faculty", Unit_icon: "⚙️" },
-  { Unit_id: 200, Unit_name: "คณะศิลปกรรมและออกแบบอุตสาหกรรม", Unit_type: "faculty", Unit_icon: "🎨" },
-  { Unit_id: 300, Unit_name: "คณะบริหารธุรกิจ", Unit_type: "faculty", Unit_icon: "📊" },
-  { Unit_id: 101, Unit_name: "สาขาวิศวกรรมคอมพิวเตอร์", Unit_type: "major", Unit_icon: "💻", Unit_parent_id: 100 },
-  { Unit_id: 102, Unit_name: "สาขาวิศวกรรมไฟฟ้า", Unit_type: "major", Unit_icon: "⚡", Unit_parent_id: 100 },
-  { Unit_id: 301, Unit_name: "สาขาการจัดการทั่วไป", Unit_type: "major", Unit_icon: "🏢", Unit_parent_id: 300 },
-];
-
+// POST /api/admin/units/seed — กู้คืนข้อมูลพื้นฐานเข้าสู่ Database
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session || (session.user as any).role < 3) {
@@ -19,26 +12,57 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    for (const unit of DEFAULT_UNITS) {
-      await prisma.organizationUnit.upsert({
-        where: { Unit_id: unit.Unit_id },
-        update: {
-          Unit_name: unit.Unit_name,
-          Unit_type: unit.Unit_type,
-          Unit_icon: unit.Unit_icon,
-          Unit_parent_id: unit.Unit_parent_id || null,
-        },
-        create: {
-          Unit_id: unit.Unit_id,
-          Unit_name: unit.Unit_name,
-          Unit_type: unit.Unit_type,
-          Unit_icon: unit.Unit_icon,
-          Unit_parent_id: unit.Unit_parent_id || null,
-        },
-      });
+    const operations = [];
+
+    for (const faculty of FACULTIES) {
+      // 1. Create or Update Faculty
+      operations.push(
+        prisma.organizationUnit.upsert({
+          where: { Unit_id: faculty.id },
+          update: {
+            Unit_name: faculty.name,
+            Unit_icon: faculty.icon,
+            Unit_type: "faculty",
+          },
+          create: {
+            Unit_id: faculty.id,
+            Unit_name: faculty.name,
+            Unit_icon: faculty.icon,
+            Unit_type: "faculty",
+          },
+        })
+      );
+
+      // 2. Create or Update Majors
+      let majorIdCounter = faculty.id * 100 + 1;
+      for (const major of faculty.majors) {
+        operations.push(
+          prisma.organizationUnit.upsert({
+            where: { Unit_id: majorIdCounter },
+            update: {
+              Unit_name: major.name,
+              Unit_icon: major.icon,
+              Unit_type: "major",
+              Unit_parent_id: faculty.id,
+            },
+            create: {
+              Unit_id: majorIdCounter,
+              Unit_name: major.name,
+              Unit_icon: major.icon,
+              Unit_type: "major",
+              Unit_parent_id: faculty.id,
+            },
+          })
+        );
+        majorIdCounter++;
+      }
     }
-    return NextResponse.json({ success: true, message: "Restored default units" });
+
+    await Promise.all(operations);
+
+    return NextResponse.json({ success: true, message: "Data restored successfully" });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to seed units" }, { status: 500 });
+    console.error("Seeding Error:", error);
+    return NextResponse.json({ error: "Failed to restore data" }, { status: 500 });
   }
 }

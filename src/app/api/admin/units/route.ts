@@ -83,11 +83,30 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+  try {
+    const unit = await prisma.organizationUnit.findUnique({ where: { Unit_id: Number(id) } });
+    if (!unit) return NextResponse.json({ error: "ไม่พบข้อมูลหน่วยงาน" }, { status: 404 });
 
-  if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+    // Check usage in Staff and Student tables
+    const [usedByStaff, usedByStudent] = await Promise.all([
+      prisma.staff.findFirst({
+        where: { OR: [{ faculty: unit.Unit_name }, { major: unit.Unit_name }] }
+      }),
+      prisma.student.findFirst({
+        where: { OR: [{ faculty: unit.Unit_name }, { major: unit.Unit_name }] }
+      })
+    ]);
 
-  await prisma.organizationUnit.delete({ where: { Unit_id: Number(id) } });
-  return NextResponse.json({ success: true });
+    if (usedByStaff || usedByStudent) {
+      return NextResponse.json({ 
+        error: "ไม่สามารถลบได้ เนื่องจากมีเจ้าหน้าที่หรือนักศึกษายังคงสังกัดหน่วยงานนี้อยู่" 
+      }, { status: 400 });
+    }
+
+    await prisma.organizationUnit.delete({ where: { Unit_id: Number(id) } });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Delete Unit Error:", error);
+    return NextResponse.json({ error: "เกิดข้อผิดพลาดในการลบข้อมูล" }, { status: 500 });
+  }
 }
