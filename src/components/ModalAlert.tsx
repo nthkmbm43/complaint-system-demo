@@ -63,22 +63,23 @@ export default function ModalAlert({
 
   return (
     <div 
-      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 transition-all duration-300 ${
+      className={`fixed inset-0 z-[9999] overflow-y-auto flex justify-center p-4 transition-all duration-300 ${
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
       onTransitionEnd={() => !isOpen && setShouldRender(false)}
     >
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
         onClick={() => !showCancel && onConfirm?.()}
       />
 
       {/* Modal Content */}
       <div 
-        className={`relative bg-white/90 backdrop-blur-xl w-full max-w-sm rounded-[2.5rem] shadow-2xl border border-white/20 p-8 text-center transform transition-all duration-500 ${
+        className={`relative bg-white/90 backdrop-blur-xl w-full max-w-sm rounded-[2.5rem] shadow-2xl border border-white/20 p-8 text-center my-auto h-fit transform transition-all duration-500 ${
           isOpen ? "scale-100 translate-y-0" : "scale-90 translate-y-10"
         }`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center mb-6">
           {icons[type] || icons.info}
@@ -88,7 +89,7 @@ export default function ModalAlert({
           {title}
         </h3>
         
-        <p className="text-slate-500 font-medium mb-8 leading-relaxed">
+        <p className="text-slate-500 font-medium mb-8 leading-relaxed break-words">
           {message}
         </p>
 
