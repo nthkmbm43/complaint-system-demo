@@ -169,9 +169,12 @@ export default function StaffManagementPage() {
           />
           
           {/* Layer 2: Independent Scroll Container */}
-          <div className="fixed inset-0 z-[1001] overflow-y-auto flex justify-center p-4 py-12 md:py-24">
+          <div 
+            className="fixed inset-0 z-[1001] overflow-y-auto flex justify-center p-4 py-12 md:py-24"
+            onClick={closeModal}
+          >
             <div 
-              className="relative bg-white rounded-[2.5rem] w-full max-w-3xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] p-10 md:p-14 my-auto animate-in zoom-in-95 duration-300"
+              className="relative bg-white rounded-[2.5rem] w-full max-w-2xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] p-8 md:p-10 my-auto animate-in zoom-in-95 duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header with Close Button */}
