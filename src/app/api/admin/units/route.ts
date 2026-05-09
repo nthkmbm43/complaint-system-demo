@@ -83,6 +83,11 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+
   try {
     const unit = await prisma.organizationUnit.findUnique({ where: { Unit_id: Number(id) } });
     if (!unit) return NextResponse.json({ error: "ไม่พบข้อมูลหน่วยงาน" }, { status: 404 });
