@@ -247,11 +247,11 @@ export default function AdminUnitsPage() {
 
       {showModal && (
         <div 
-          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center p-4 py-12"
+          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center p-4 pt-4 pb-20"
           onClick={closeModal}
         >
           <div 
-            className="relative bg-white rounded-[2.5rem] w-full max-w-2xl p-6 md:p-10 shadow-2xl h-fit my-auto"
+            className="relative bg-white rounded-[2.5rem] w-full max-w-xl p-10 shadow-2xl h-fit mt-10 mb-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-3xl font-black text-slate-900 mb-8">{editingUnit ? "แก้ไขหน่วยงาน" : "เพิ่มหน่วยงานใหม่"}</h3>

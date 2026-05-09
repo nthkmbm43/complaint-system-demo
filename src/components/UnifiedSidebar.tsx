@@ -113,8 +113,8 @@ export default function UnifiedSidebar({
           </button>
 
           <div className="flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-lg shadow-lg`}>
-              {brand.name.charAt(0)}
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img src="/img/logo.png" alt="RMUTI Logo" className="w-full h-full object-contain" />
             </div>
             <div className="hidden sm:block leading-none">
               <span className="text-lg font-black text-slate-800 tracking-tighter uppercase">
@@ -175,8 +175,8 @@ export default function UnifiedSidebar({
         </div>
 
         <div className="flex-none px-8 py-10 flex items-center gap-4 bg-gradient-to-r from-white/[0.03] to-transparent">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-xl shadow-2xl shadow-indigo-600/30">
-            {user.initial}
+          <div className="w-14 h-14 flex items-center justify-center">
+            <img src="/img/logo.png" alt="RMUTI Logo" className="w-full h-full object-contain" />
           </div>
           <div className="overflow-hidden">
             <p className="text-base font-black text-white truncate">{user.name}</p>

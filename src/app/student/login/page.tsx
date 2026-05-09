@@ -76,6 +76,9 @@ export default function StudentLoginPage() {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-[3rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
             <div className="mb-10 text-center lg:text-left">
+              <div className="lg:hidden w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-slate-100 mx-auto">
+                <img src="/img/logo.png" alt="RMUTI Logo" className="w-12 h-12 object-contain" />
+              </div>
               <h2 className="text-4xl font-black text-slate-800 tracking-tight">Student Portal</h2>
               <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Sign in to your account</p>
             </div>

@@ -95,8 +95,8 @@ export default function MobileSidebar({
         </div>
 
         <div className="px-6 py-8 border-b border-white/5 flex items-center gap-4 bg-white/2 space-y-1">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-lg shadow-lg shadow-indigo-600/20">
-            {userInitial}
+          <div className="w-12 h-12 flex items-center justify-center">
+            <img src="/img/logo.png" alt="RMUTI Logo" className="w-full h-full object-contain" />
           </div>
           <div className="overflow-hidden">
             <p className="text-sm font-black text-white truncate">{userName}</p>

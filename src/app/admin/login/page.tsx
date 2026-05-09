@@ -77,8 +77,8 @@ export default function AdminLoginPage() {
              </div>
 
             <div className="mb-10 text-center lg:text-left">
-              <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-slate-900/20 mx-auto lg:mx-0">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-xl border border-slate-100 mx-auto lg:mx-0">
+                <img src="/img/logo.png" alt="RMUTI Logo" className="w-12 h-12 object-contain" />
               </div>
               <h2 className="text-3xl font-black text-slate-800 tracking-tight">Staff Portal</h2>
               <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Administrative Login</p>
