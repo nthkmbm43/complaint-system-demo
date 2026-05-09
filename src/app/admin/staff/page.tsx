@@ -38,6 +38,8 @@ export default function StaffManagementPage() {
       const res = await fetch("/api/admin/staff");
       const data = await res.json();
       setStaff(data.staff || []);
+    } catch (err) {
+      console.error("Fetch Staff Error:", err);
     } finally {
       setLoading(false);
     }

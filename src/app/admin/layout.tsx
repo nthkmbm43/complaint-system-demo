@@ -43,7 +43,6 @@ export default function AdminLayout({
           { label: "แดชบอร์ดสรุปผล", href: "/admin/dashboard", icon: "Chart" },
           { label: "จัดการข้อร้องเรียน", href: "/admin/complaints", icon: "Briefcase" },
           { label: "การมอบหมายงาน", href: "/admin/assignments", icon: "CheckSquare" },
-          { label: "จัดการผู้ใช้งาน", href: "/admin/users", icon: "Users" },
           { label: "จัดการเจ้าหน้าที่", href: "/admin/staff", icon: "Users" },
           { label: "จัดการนักศึกษา", href: "/admin/students", icon: "User" },
           { label: "รายงานสถิติ", href: "/admin/reports", icon: "Chart" },

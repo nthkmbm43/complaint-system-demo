@@ -58,7 +58,8 @@ export default function AdminStudentsPage() {
       setStudents(stuData.students || []);
       setUnits(unitData.units || []);
     } catch (err) {
-      setMsg({ type: "error", title: "ข้อผิดพลาด", text: "ไม่สามารถโหลดข้อมูลได้" });
+      console.error("Fetch Data Error:", err);
+      // Silently fail and show empty state to prevent modal spam
     } finally {
       setLoading(false);
     }

@@ -12,25 +12,37 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden: Admin only" }, { status: 403 });
   }
 
-  const [staffList, studentList] = await Promise.all([
-    prisma.staff.findMany({
-      select: { 
-        id: true, 
-        username: true, 
-        name: true, 
-        role: true, 
-        createdAt: true,
-        _count: {
-          select: { assignedComplaints: { where: { status: { not: 3 } } } }
-        }
-      },
-      orderBy: { role: "desc" },
-    }),
-    prisma.student.findMany({
-      select: { id: true, studentId: true, name: true, faculty: true, major: true, createdAt: true },
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  let staffList: any[] = [];
+  let studentList: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.staff.findMany({
+        select: { 
+          id: true, 
+          username: true, 
+          name: true, 
+          role: true, 
+          faculty: true,
+          major: true,
+          createdAt: true,
+          _count: {
+            select: { assignedComplaints: { where: { status: { not: 3 } } } }
+          }
+        },
+        orderBy: { role: "desc" },
+      }),
+      prisma.student.findMany({
+        select: { id: true, studentId: true, name: true, faculty: true, major: true, createdAt: true, email: true },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+    staffList = results[0];
+    studentList = results[1];
+  } catch (error) {
+    console.error("Fetch Users API Error:", error);
+    // Return empty lists if DB is not ready to prevent frontend crash
+  }
 
   return NextResponse.json({ staff: staffList, students: studentList });
 }
