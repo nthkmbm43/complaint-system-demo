@@ -61,8 +61,8 @@ export async function POST(req: NextRequest) {
     await Promise.all(operations);
 
     return NextResponse.json({ success: true, message: "Data restored successfully" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Seeding Error:", error);
-    return NextResponse.json({ error: "Failed to restore data" }, { status: 500 });
+    return NextResponse.json({ error: `Failed to restore data: ${error.message}` }, { status: 500 });
   }
 }

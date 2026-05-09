@@ -120,11 +120,13 @@ export default function AdminUnitsPage() {
   const handleRestore = async () => {
     setLoading(true);
     const res = await fetch("/api/admin/units/seed", { method: "POST" });
+    const data = await res.json();
+    
     if (res.ok) {
       setMsg({ type: "success", title: "กู้คืนสำเร็จ", text: "ระบบกู้คืนข้อมูลคณะ/สาขาพื้นฐานเรียบร้อยแล้ว" });
       fetchUnits();
     } else {
-      setMsg({ type: "error", title: "ผิดพลาด", text: "ไม่สามารถกู้คืนข้อมูลได้" });
+      setMsg({ type: "error", title: "ผิดพลาด", text: data.error || "ไม่สามารถกู้คืนข้อมูลได้" });
       setLoading(false);
     }
   };

@@ -6,12 +6,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting Seeding for Demo...');
 
-  // 1. Clear existing data
-  await prisma.complaintHistory.deleteMany();
-  await prisma.evaluation.deleteMany();
-  await prisma.complaint.deleteMany();
-  await prisma.student.deleteMany();
-  await prisma.staff.deleteMany();
+  // 1. Clear existing data (Commented out for production safety)
+  // await prisma.complaintHistory.deleteMany();
+  // await prisma.evaluation.deleteMany();
+  // await prisma.complaint.deleteMany();
+  // await prisma.student.deleteMany();
+  // await prisma.staff.deleteMany();
 
   const hashedDefaultPassword = await bcrypt.hash('12345678', 10);
 
