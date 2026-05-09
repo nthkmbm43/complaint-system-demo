@@ -16,7 +16,7 @@ export default function Home() {
         <div className="flex items-center gap-4 group">
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg border border-slate-100 group-hover:scale-110 transition-transform">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-10 h-10 object-contain" />
+            <img src="/img/logo.png" alt="RMUTI Logo" className="w-10 h-10 object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-black text-slate-800 tracking-tighter uppercase leading-none">RMUTI</span>
@@ -186,7 +186,7 @@ export default function Home() {
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                   <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-9 h-9 object-contain" />
+                   <img src="/img/logo.png" alt="RMUTI Logo" className="w-9 h-9 object-contain" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xl font-black tracking-tighter uppercase leading-none">RMUTI</span>

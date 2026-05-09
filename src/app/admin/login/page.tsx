@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
         <div className="space-y-8 max-w-lg">
           <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
+            <img src="/img/logo.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
           </div>
           <h1 className="text-6xl font-black text-white leading-tight">
             RMUTI <br /><span className="text-indigo-400">Staff Portal.</span>

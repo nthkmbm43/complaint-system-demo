@@ -44,7 +44,7 @@ export default function StudentLoginPage() {
         <div className="space-y-8 max-w-lg">
           <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl border border-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/a/a2/Logo_RMUTI.png/220px-Logo_RMUTI.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
+            <img src="/img/logo.png" alt="RMUTI Logo" className="w-14 h-14 object-contain" />
           </div>
           <h1 className="text-6xl font-black text-slate-800 leading-tight">
             RMUTI <br /><span className="text-orange-500">Complaint System</span>

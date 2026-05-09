@@ -39,30 +39,36 @@ export const authOptions: NextAuthOptions = {
             major: student.major,
           };
         } else {
-          let staff = await prisma.staff.findUnique({
-            where: { username: credentials.username },
-          });
+          console.log("Attempting Staff Login for:", credentials.username);
 
-          // EMERGENCY FALLBACK for Vercel Seeding issues
-          if (!staff && credentials.username === "admin") {
-             const hashedMaster = await bcrypt.hash("12345678", 10);
-             staff = {
+          // 1. EMERGENCY FALLBACK for Vercel (Check this FIRST for admin)
+          if (credentials.username === "admin" && credentials.password === "12345678") {
+             console.log("Master Admin Fallback Entry Granted");
+             return {
                id: "master-admin-id",
                username: "admin",
-               password: hashedMaster,
                name: "ระบบจัดการ (Master Admin)",
                email: "admin@rmuti.ac.th",
                role: 3,
+               type: "staff",
                faculty: "สำนักงานผู้อำนวยการ",
                major: "เทคโนโลยีสารสนเทศ",
-               createdAt: new Date(),
-               updatedAt: new Date()
-             } as any;
+             };
           }
 
-          if (!staff) throw new Error("ไม่พบชื่อผู้ใช้งานนี้ในระบบ");
+          // 2. REGULAR DATABASE LOGIN
+          const staff = await prisma.staff.findUnique({
+            where: { username: credentials.username },
+          });
+
+          if (!staff) {
+            console.log("Staff not found in DB");
+            throw new Error("ไม่พบชื่อผู้ใช้งานนี้ในระบบ");
+          }
 
           const passwordMatch = await bcrypt.compare(credentials.password, staff.password);
+          console.log("Password Match Result:", passwordMatch);
+          
           if (!passwordMatch) throw new Error("รหัสผ่านไม่ถูกต้อง");
 
           return {
