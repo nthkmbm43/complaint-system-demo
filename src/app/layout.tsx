@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ระบบข้อร้องเรียนออนไลน์ RMUTI",
-  description: "ระบบรับข้อร้องเรียนออนไลน์ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตขอนแก่น",
+  title: "RMUTI Complaint System - ระบบรับเรื่องร้องเรียนนักศึกษา",
+  description: "ระบบรับเรื่องร้องเรียนและข้อเสนอแนะ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตขอนแก่น (RMUTI Khon Kaen)",
 };
 
 export default function RootLayout({

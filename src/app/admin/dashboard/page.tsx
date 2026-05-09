@@ -33,8 +33,10 @@ export default async function AdminDashboard() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   // ดึงข้อมูลสถิติ
-  const [newCases, criticalCases, myCases, completedThisMonth, recentComplaints, typeStats] =
-    await Promise.all([
+  let newCases = 0, criticalCases = 0, myCases = 0, completedThisMonth = 0, recentComplaints: any[] = [], typeStats: any[] = [];
+
+  try {
+    const results = await Promise.all([
       prisma.complaint.count({ where: { ...baseWhere, status: 0 } }),
       prisma.complaint.count({
         where: { ...baseWhere, priority: { gte: 4 }, status: { not: 3 } },
@@ -45,22 +47,29 @@ export default async function AdminDashboard() {
       prisma.complaint.count({
         where: { ...baseWhere, status: 3, updatedAt: { gte: startOfMonth } },
       }),
-
-      // ดึง 5 รายการล่าสุดมาแสดงโชว์
       prisma.complaint.findMany({
         where: baseWhere,
         take: 5,
         orderBy: { createdAt: "desc" },
         include: { student: { select: { name: true } } },
       }),
-
-      // ดึงสถิติตามหมวดหมู่
       prisma.complaint.groupBy({
         where: baseWhere,
         by: ['type'],
         _count: { _all: true }
       })
     ]);
+
+    newCases = results[0];
+    criticalCases = results[1];
+    myCases = results[2];
+    completedThisMonth = results[3];
+    recentComplaints = results[4];
+    typeStats = results[5];
+  } catch (error) {
+    console.error("Dashboard Data Fetch Error:", error);
+    // Continue with zeroed values to prevent page crash
+  }
 
   const stats = { newCases, criticalCases, myCases, completedThisMonth };
 
