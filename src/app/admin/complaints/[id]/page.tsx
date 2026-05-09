@@ -233,8 +233,12 @@ export default function AdminComplaintDetailPage() {
 
       {/* Assignment Modal */}
       {showAssignModal && (
-        <div className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center p-4">
+          <div 
+            className="fixed inset-0" 
+            onClick={() => setShowAssignModal(false)}
+          />
+          <div className="relative bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl my-auto h-fit animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
              <h3 className="text-2xl font-black text-slate-900 mb-2">รับเรื่องและมอบหมายงาน</h3>
              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Operator Control Panel</p>
              

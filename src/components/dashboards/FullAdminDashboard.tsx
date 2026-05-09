@@ -19,9 +19,10 @@ export default function FullAdminDashboard({ stats, recentComplaints = [], typeS
            </div>
            <h2 className="text-5xl font-black text-slate-900 tracking-tighter">RMUTI Care Control</h2>
         </div>
-        <div className="flex gap-4">
-           <Link href="/admin/settings" className="px-6 py-3.5 bg-white border-2 border-slate-200 text-slate-900 font-black rounded-2xl hover:border-slate-400 transition-all text-xs uppercase tracking-widest shadow-sm">System Settings</Link>
-           <Link href="/admin/users" className="px-6 py-3.5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all text-xs uppercase tracking-widest shadow-xl">Manage Users</Link>
+        <div className="flex flex-wrap gap-4">
+           <Link href="/admin/students" className="px-6 py-3.5 bg-orange-500 text-white font-black rounded-2xl hover:bg-orange-600 transition-all text-[10px] uppercase tracking-widest shadow-xl shadow-orange-500/20">Manage Students</Link>
+           <Link href="/admin/staff" className="px-6 py-3.5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all text-[10px] uppercase tracking-widest shadow-xl">Manage Staff</Link>
+           <Link href="/admin/settings" className="px-6 py-3.5 bg-white border-2 border-slate-200 text-slate-900 font-black rounded-2xl hover:border-slate-400 transition-all text-[10px] uppercase tracking-widest shadow-sm">System Settings</Link>
         </div>
       </div>
 
@@ -84,8 +85,14 @@ export default function FullAdminDashboard({ stats, recentComplaints = [], typeS
                <h4 className="text-xl font-black mb-4 uppercase tracking-tight leading-tight">Admin<br/>Quick Access</h4>
                <ul className="space-y-4">
                   <li>
-                    <Link href="/admin/users" className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group">
-                      <span className="text-[10px] font-black uppercase tracking-widest">User Directory</span>
+                    <Link href="/admin/students" className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group">
+                      <span className="text-[10px] font-black uppercase tracking-widest">Student Accounts</span>
+                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin/staff" className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group">
+                      <span className="text-[10px] font-black uppercase tracking-widest">Staff / Admin List</span>
                       <span className="group-hover:translate-x-1 transition-transform">→</span>
                     </Link>
                   </li>
