@@ -163,68 +163,74 @@ export default function AdminStudentsPage() {
 
       {showModal && (
         <div 
-          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center items-start p-0"
+          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/70 backdrop-blur-md flex justify-center p-4 py-12 md:py-20"
           onClick={closeModal}
         >
           <div 
-            className="relative bg-white w-full max-w-2xl min-h-screen shadow-2xl flex flex-col p-8 md:p-12 animate-in slide-in-from-right duration-500"
+            className="relative bg-white rounded-[3rem] w-full max-w-3xl shadow-[0_20px_70px_-10px_rgba(0,0,0,0.5)] p-10 md:p-16 my-auto animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Clean Original Style Header */}
-            <div className="flex items-center justify-between mb-12">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-orange-100">🎓</div>
+            {/* Elegant Header - Balanced Spacing */}
+            <div className="flex items-center justify-between mb-16">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-orange-50 text-orange-500 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-orange-100">🎓</div>
                 <div>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{editingId ? "แก้ไขข้อมูลนักศึกษา" : "เพิ่มนักศึกษาใหม่"}</h3>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Student Account Management</p>
+                  <h3 className="text-4xl font-black text-slate-900 tracking-tight">{editingId ? "แก้ไขข้อมูลนักศึกษา" : "เพิ่มนักศึกษาใหม่"}</h3>
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 ml-1">Student Administration</p>
                 </div>
               </div>
-              <button onClick={closeModal} className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center border border-slate-100">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <button onClick={closeModal} className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center border border-slate-100">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8 flex-grow">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">รหัสนักศึกษา</label>
-                  <input type="text" placeholder="6XXXXXXXXXX-X" value={form.studentId} onChange={(e) => setForm({ ...form, studentId: e.target.value })} disabled={!!editingId} required className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-mono font-bold text-slate-700" />
+            <form onSubmit={handleSubmit} className="space-y-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">รหัสนักศึกษา</label>
+                  <input type="text" placeholder="6XXXXXXXXXX-X" value={form.studentId} onChange={(e) => setForm({ ...form, studentId: e.target.value })} disabled={!!editingId} required className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-8 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-mono font-bold text-slate-700 text-lg" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">ชื่อ-นามสกุล</label>
-                  <input type="text" placeholder="ชื่อ-นามสกุล" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-bold text-slate-700" />
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">ชื่อ-นามสกุล</label>
+                  <input type="text" placeholder="ชื่อ-นามสกุล" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-8 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-bold text-slate-700 text-lg" />
                 </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">รหัสผ่าน {editingId && "(ปล่อยว่างถ้าไม่เปลี่ยน)"}</label>
-                  <input type="password" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required={!editingId} className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-400 transition-all" />
+                <div className="space-y-3 sm:col-span-2">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">รหัสผ่าน {editingId && "(ปล่อยว่างถ้าไม่เปลี่ยน)"}</label>
+                  <input type="password" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required={!editingId} className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-8 focus:ring-orange-500/5 focus:border-orange-400 transition-all text-lg" />
                 </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">อีเมลสำหรับรับแจ้งเตือน</label>
-                  <input type="email" placeholder="example@gmail.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-bold text-slate-700" />
+                <div className="space-y-3 sm:col-span-2">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">อีเมลสำหรับรับแจ้งเตือน</label>
+                  <input type="email" placeholder="example@gmail.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-8 focus:ring-orange-500/5 focus:border-orange-400 transition-all font-bold text-slate-700 text-lg" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">คณะ</label>
-                  <select value={form.faculty} onChange={(e) => setForm({ ...form, faculty: e.target.value, major: "" })} className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 appearance-none focus:ring-4 focus:ring-orange-500/5">
-                    <option value="">— เลือกคณะ —</option>
-                    {faculties.map((f) => (
-                      <option key={f.Unit_id} value={f.Unit_name}>{f.Unit_icon} {f.Unit_name}</option>
-                    ))}
-                  </select>
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">คณะ</label>
+                  <div className="relative">
+                    <select value={form.faculty} onChange={(e) => setForm({ ...form, faculty: e.target.value, major: "" })} className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 appearance-none focus:ring-8 focus:ring-orange-500/5 transition-all text-lg">
+                      <option value="">— เลือกคณะ —</option>
+                      {faculties.map((f) => (
+                        <option key={f.Unit_id} value={f.Unit_name}>{f.Unit_icon} {f.Unit_name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">สาขา</label>
-                  <select value={form.major} onChange={(e) => setForm({ ...form, major: e.target.value })} disabled={!form.faculty} className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 appearance-none disabled:opacity-40 focus:ring-4 focus:ring-orange-500/5">
-                    <option value="">— เลือกสาขา —</option>
-                    {availableMajors.map((m) => (
-                      <option key={m.Unit_id} value={m.Unit_name}>{m.Unit_icon} {m.Unit_name}</option>
-                    ))}
-                  </select>
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">สาขา</label>
+                  <div className="relative">
+                    <select value={form.major} onChange={(e) => setForm({ ...form, major: e.target.value })} disabled={!form.faculty} className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 appearance-none disabled:opacity-40 focus:ring-8 focus:ring-orange-500/5 transition-all text-lg">
+                      <option value="">— เลือกสาขา —</option>
+                      {availableMajors.map((m) => (
+                        <option key={m.Unit_id} value={m.Unit_name}>{m.Unit_icon} {m.Unit_name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex gap-4 pt-12 mt-auto">
-                <button type="button" onClick={closeModal} className="flex-1 py-5 bg-white border border-slate-200 text-slate-600 font-black rounded-2xl hover:bg-slate-50 transition-all uppercase text-xs tracking-widest">ยกเลิก</button>
-                <button type="submit" disabled={saving} className="flex-[2] py-5 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-2xl transition-all uppercase text-xs tracking-widest shadow-2xl shadow-orange-500/20 disabled:opacity-50">{saving ? "กำลังบันทึก..." : editingId ? "บันทึกการแก้ไข" : "🚀 ลงทะเบียนนักศึกษา"}</button>
+              <div className="flex flex-col sm:flex-row gap-6 pt-10">
+                <button type="button" onClick={closeModal} className="flex-1 py-6 bg-white border-2 border-slate-100 text-slate-500 font-black rounded-[2rem] hover:bg-slate-50 transition-all uppercase text-sm tracking-widest">ยกเลิก</button>
+                <button type="submit" disabled={saving} className="flex-[2] py-6 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-[2rem] transition-all uppercase text-sm tracking-widest shadow-2xl shadow-orange-500/30 disabled:opacity-50 hover:scale-[1.02] active:scale-95">{saving ? "กำลังบันทึก..." : editingId ? "ยืนยันการแก้ไขข้อมูล" : "🚀 ลงทะเบียนนักศึกษา"}</button>
               </div>
             </form>
           </div>

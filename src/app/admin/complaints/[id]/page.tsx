@@ -234,60 +234,66 @@ export default function AdminComplaintDetailPage() {
       {/* Assignment Modal */}
       {showAssignModal && (
         <div 
-          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex justify-center items-start p-0"
+          className="fixed inset-0 z-[1000] overflow-y-auto bg-slate-900/70 backdrop-blur-md flex justify-center p-4 py-12 md:py-20"
           onClick={() => setShowAssignModal(false)}
         >
           <div 
-            className="relative bg-white w-full max-w-xl min-h-screen shadow-2xl flex flex-col p-8 md:p-12 animate-in slide-in-from-right duration-500"
+            className="relative bg-white rounded-[3rem] w-full max-w-xl shadow-[0_20px_70px_-10px_rgba(0,0,0,0.5)] p-10 md:p-16 my-auto animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Clean Original Style Header */}
-            <div className="flex items-center justify-between mb-12">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-indigo-100">🛡️</div>
+            {/* Elegant Header - Balanced Spacing */}
+            <div className="flex items-center justify-between mb-16">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center text-4xl shadow-sm border border-indigo-100">🛡️</div>
                 <div>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">มอบหมายงาน</h3>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Case Assignment Control</p>
+                  <h3 className="text-4xl font-black text-slate-900 tracking-tight">มอบหมายงาน</h3>
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 ml-1">Case Assignment</p>
                 </div>
               </div>
-              <button onClick={() => setShowAssignModal(false)} className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center border border-slate-100">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <button onClick={() => setShowAssignModal(false)} className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center border border-slate-100">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
              
-             <div className="space-y-8 flex-grow">
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">ระดับความเร่งด่วน</label>
-                   <select 
-                     value={priorityUpdate} 
-                     onChange={(e) => setPriorityUpdate(e.target.value)}
-                     className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none"
-                   >
-                     {Object.entries(PRIORITY_CONFIG).map(([v, {label}]) => <option key={v} value={v}>{label}</option>)}
-                   </select>
+             <div className="space-y-12">
+                <div className="space-y-4">
+                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">ระดับความเร่งด่วน</label>
+                   <div className="relative">
+                     <select 
+                       value={priorityUpdate} 
+                       onChange={(e) => setPriorityUpdate(e.target.value)}
+                       className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-8 focus:ring-indigo-500/5 transition-all appearance-none text-lg"
+                     >
+                       {Object.entries(PRIORITY_CONFIG).map(([v, {label}]) => <option key={v} value={v}>{label}</option>)}
+                     </select>
+                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                   </div>
                 </div>
 
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">มอบหมายให้เจ้าหน้าที่</label>
-                   <select 
-                     value={assignedStaffId} 
-                     onChange={(e) => setAssignedStaffId(e.target.value)}
-                     className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none"
-                   >
-                     <option value="">เลือกเจ้าหน้าที่...</option>
-                     {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major || s.faculty})</option>)}
-                   </select>
+                <div className="space-y-4">
+                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">มอบหมายให้เจ้าหน้าที่</label>
+                   <div className="relative">
+                     <select 
+                       value={assignedStaffId} 
+                       onChange={(e) => setAssignedStaffId(e.target.value)}
+                       className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 focus:outline-none focus:ring-8 focus:ring-indigo-500/5 transition-all appearance-none text-lg"
+                     >
+                       <option value="">เลือกเจ้าหน้าที่...</option>
+                       {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major || s.faculty})</option>)}
+                     </select>
+                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-12 mt-auto">
-                   <button onClick={() => setShowAssignModal(false)} className="flex-1 py-5 bg-white border border-slate-200 text-slate-600 font-black rounded-2xl hover:bg-slate-50 transition-all uppercase text-xs tracking-widest">ยกเลิก</button>
+                <div className="flex flex-col sm:flex-row gap-6 pt-10">
+                   <button onClick={() => setShowAssignModal(false)} className="flex-1 py-6 bg-white border-2 border-slate-100 text-slate-500 font-black rounded-[2rem] hover:bg-slate-50 transition-all uppercase text-sm tracking-widest">ยกเลิก</button>
                    <button 
                      onClick={() => {
                        handleUpdate(undefined, { status: 1, priority: Number(priorityUpdate), assignedStaffId });
                        setShowAssignModal(false);
                      }}
                      disabled={!assignedStaffId}
-                     className="flex-[2] py-5 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all uppercase text-xs tracking-widest disabled:opacity-50 shadow-2xl shadow-indigo-600/30"
+                     className="flex-[2] py-6 bg-indigo-600 text-white font-black rounded-[2rem] hover:bg-indigo-700 transition-all uppercase text-sm tracking-widest disabled:opacity-50 shadow-2xl shadow-indigo-600/30"
                    >
                      ยืนยันและมอบหมายงาน
                    </button>
