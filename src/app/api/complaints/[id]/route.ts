@@ -88,7 +88,10 @@ export async function PATCH(
           current.student.name,
           complaint.title,
           STATUS_LABELS[complaint.status],
-          note
+          note,
+          complaint.status, // ส่ง status ไปเพื่อเลือกคำอธิบาย
+          id, // ส่ง id ไปเพื่อทำลิงก์ตรงเข้าสู่ระบบ
+          attachment // ส่งภาพหลักฐานจากฝั่ง Staff ไปโชว์ในอีเมล
         );
       }
   }
