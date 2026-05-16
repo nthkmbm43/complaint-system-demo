@@ -16,10 +16,15 @@ export async function PATCH(
   const isStaff = (session.user as any).type === "staff";
   const userId = (session.user as any).id;
   const userRole = (session.user as any).role || 0;
+  const { faculty, major } = session.user as any;
+  const isOperatorOrAdmin = userRole >= 2;
 
   const current = await prisma.complaint.findUnique({ 
     where: { id },
-    include: { student: { select: { name: true, studentId: true, email: true, faculty: true, major: true } } }
+    include: { 
+      student: { select: { name: true, studentId: true, email: true, faculty: true, major: true } },
+      assignedStaff: { select: { id: true, faculty: true, major: true } }
+    }
   });
   if (!current) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
@@ -27,10 +32,17 @@ export async function PATCH(
   if (isStaff) {
      if (userRole === 3) { /* Admin: OK */ }
      else if (userRole === 2) {
-        // Operator: ต้องอยู่คณะเดียวกัน และถ้าลงสาขาต้องตรงกัน
-        const { faculty, major } = session.user as any;
-        if (faculty && current.student.faculty !== faculty) return NextResponse.json({ error: "Forbidden: Different Faculty" }, { status: 403 });
-        if (major && current.student.major !== major) return NextResponse.json({ error: "Forbidden: Different Major" }, { status: 403 });
+        // Operator: สามารถจัดการได้ถ้า:
+        // 1. นักศึกษาอยู่ในสังกัดตัวเอง (เพื่อรับเรื่องและส่งต่อ)
+        // 2. เจ้าหน้าที่ที่รับผิดชอบอยู่ในสังกัดตัวเอง (เพื่อติดตามงาน)
+        const isFromMyUnit = (!faculty || current.student.faculty === faculty) && (!major || current.student.major === major);
+        const isAssignedToMyUnit = current.assignedStaff && 
+          (!faculty || current.assignedStaff.faculty === faculty) && 
+          (!major || current.assignedStaff.major === major);
+
+        if (!isFromMyUnit && !isAssignedToMyUnit) {
+          return NextResponse.json({ error: "Forbidden: Not in your organization unit scope" }, { status: 403 });
+        }
      } else if (userRole === 1) {
         // Staff: ต้องเป็นผู้ได้รับมอบหมาย
         if (current.assignedStaffId !== userId) return NextResponse.json({ error: "Forbidden: Not your assigned case" }, { status: 403 });
@@ -43,14 +55,18 @@ export async function PATCH(
   const body = await req.json();
   const { status, priority, note, attachment, assignedStaffId, title, description, type, isAnonymous } = body;
 
-  const isOperatorOrAdmin = userRole >= 2;
-
   const complaint = await prisma.complaint.update({
     where: { id },
     data: {
-      ...(status !== undefined && isStaff && { status: Number(status) }),
-      ...(priority !== undefined && isStaff && isOperatorOrAdmin && { priority: Number(priority) }),
-      ...(assignedStaffId && isStaff && isOperatorOrAdmin && { assignedStaffId }),
+      ...(status !== undefined && isStaff && (
+        userRole === 3 || // Admin: All OK
+        (userRole === 2 && ( // Operator: Scoped
+          (!faculty || current.student.faculty === faculty) && (!major || current.student.major === major)
+        )) ||
+        (current.assignedStaffId === userId) // Assigned Staff: OK
+      ) && { status: Number(status) }),
+      ...(priority !== undefined && (userRole === 3 || userRole === 2) && { priority: Number(priority) }),
+      ...(assignedStaffId !== undefined && (userRole === 3 || userRole === 2) && { assignedStaffId }),
       
       ...(title && !isStaff && current.status === 0 && { title }),
       ...(description && !isStaff && current.status === 0 && { description }),
@@ -58,14 +74,24 @@ export async function PATCH(
       ...(isAnonymous !== undefined && !isStaff && current.status === 0 && { isAnonymous }),
       ...(attachment !== undefined && !isStaff && current.status === 0 && { attachment }),
       ...(status !== undefined && !isStaff && current.status === 0 && Number(status) === 5 && { status: 5 }),
+      updatedAt: new Date(),
     },
   });
+
+  // สร้างบันทึกประวัติ (History Note)
+  let historyNote = note;
+  if (assignedStaffId && isStaff && isOperatorOrAdmin) {
+    const assignedStaff = await prisma.staff.findUnique({ where: { id: assignedStaffId } });
+    const assignmentText = `มอบหมายงานให้: ${assignedStaff?.name} (${assignedStaff?.major || assignedStaff?.faculty || 'หน่วยงานกลาง'})`;
+    historyNote = note ? `${assignmentText} | บันทึก: ${note}` : assignmentText;
+  }
 
   await prisma.complaintHistory.create({
     data: {
       complaintId: id,
       status: complaint.status,
-      note: note || null,
+      note: historyNote || `อัปเดตสถานะเป็น ${STATUS_LABELS[complaint.status]}`,
+      attachment: attachment ? attachment : undefined, // เก็บไฟล์แนบ (JSON array)
       actionById: isStaff ? userId : null,
     },
   });
@@ -82,7 +108,11 @@ export async function PATCH(
     });
 
       const studentEmail = current.student.email;
-      if (studentEmail) {
+      
+      // ส่งอีเมลแจ้งเตือนเฉพาะกรณีที่สถานะมีการเปลี่ยนแปลงเป็น: 1 (รับเรื่อง), 2 (รอประเมิน), หรือ 4 (ปฏิเสธ)
+      const isStatusChangedToNotify = status !== undefined && current.status !== Number(status) && [1, 2, 4].includes(Number(status));
+
+      if (studentEmail && isStatusChangedToNotify) {
         await sendStatusEmail(
           studentEmail,
           current.student.name,
@@ -112,29 +142,53 @@ export async function GET(
   const userId = (session.user as any).id;
   const { faculty, major } = session.user as any;
 
+  console.log("DEBUG: GET Complaint Detail", {
+    complaintId: id,
+    userId,
+    userRole,
+    isStaff
+  });
+
   const complaint = await prisma.complaint.findUnique({
     where: { id },
     include: {
       student: { select: { name: true, studentId: true, faculty: true, major: true, email: true } },
-      assignedStaff: { select: { name: true, role: true } },
+      assignedStaff: { select: { name: true, role: true, faculty: true, major: true } },
       histories: {
-        include: { actionBy: { select: { name: true } } },
+        include: { actionBy: { select: { name: true, role: true } } },
         orderBy: { createdAt: "asc" },
       },
       evaluation: true,
     },
   });
 
-  if (!complaint) return NextResponse.json({ error: "ไม่พบข้อร้องเรียนนี้" }, { status: 404 });
+  if (!complaint) {
+    return NextResponse.json({ error: "Complaint not found" }, { status: 404 });
+  }
+
+  console.log("DEBUG: Complaint Assigned Staff ID:", complaint.assignedStaffId);
 
   // Data Scoping Logic
   if (isStaff) {
     if (userRole === 3) { /* Admin: All */ }
     else if (userRole === 2) {
-      if (faculty && complaint.student.faculty !== faculty) return NextResponse.json({ error: "Forbidden: Different Faculty" }, { status: 403 });
-      if (major && complaint.student.major !== major) return NextResponse.json({ error: "Forbidden: Different Major" }, { status: 403 });
+      const uFaculty = faculty;
+      const uMajor = major;
+      
+      const isFromMyUnit = (!uFaculty || complaint.student.faculty === uFaculty) && (!uMajor || complaint.student.major === uMajor);
+      const isAssignedToMyUnit = complaint.assignedStaff && 
+        (!uFaculty || complaint.assignedStaff.faculty === uFaculty) && 
+        (!uMajor || complaint.assignedStaff.major === uMajor);
+
+      if (!isFromMyUnit && !isAssignedToMyUnit) {
+        console.log("DEBUG: Operator Forbidden", { isFromMyUnit, isAssignedToMyUnit });
+        return NextResponse.json({ error: "Forbidden: Not in your organization unit scope" }, { status: 403 });
+      }
     } else if (userRole === 1) {
-      if (complaint.assignedStaffId !== userId) return NextResponse.json({ error: "Forbidden: Not Assigned" }, { status: 403 });
+      if (complaint.assignedStaffId !== userId) {
+        console.log("DEBUG: Teacher Forbidden", { assigned: complaint.assignedStaffId, currentUser: userId });
+        return NextResponse.json({ error: "Forbidden: Not Assigned" }, { status: 403 });
+      }
     }
   } else {
     if (complaint.studentId !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });

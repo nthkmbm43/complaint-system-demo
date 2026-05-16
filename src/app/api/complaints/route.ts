@@ -120,10 +120,23 @@ export async function GET(req: NextRequest) {
       // อาจารย์: ดูได้เฉพาะที่ได้รับมอบหมาย
       where.assignedStaffId = user.id;
     } else if (role === 2) {
-      // เจ้าหน้าที่คณะ/สาขา: กรองตามสังกัด
-      where.student = {};
-      if (faculty) where.student.faculty = faculty;
-      if (major) where.student.major = major;
+      // เจ้าหน้าที่คณะ/สาขา (Operator): 
+      // 1. เห็นเคสที่นักศึกษาสังกัดคณะ/สาขาตัวเอง ยื่นมา (เพื่อรับเรื่อง)
+      // 2. เห็นเคสที่ถูกมอบหมายให้ตัวเอง หรือเจ้าหน้าที่ในสังกัดตัวเอง (เพื่อดูแลต่อกรณีโยนงานข้ามคณะ)
+      where.OR = [
+        {
+          student: {
+            faculty: faculty || undefined,
+            major: major || undefined,
+          }
+        },
+        {
+          assignedStaff: {
+            faculty: faculty || undefined,
+            major: major || undefined,
+          }
+        }
+      ];
     }
   }
 
@@ -134,7 +147,7 @@ export async function GET(req: NextRequest) {
         select: { name: true, studentId: true, faculty: true, major: true },
       },
       assignedStaff: {
-        select: { name: true, role: true },
+        select: { name: true, role: true, faculty: true, major: true },
       },
     },
     orderBy: { createdAt: "desc" },

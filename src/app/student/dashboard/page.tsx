@@ -168,7 +168,12 @@ export default async function StudentDashboard({
                       <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mt-0.5">REF: {c.id.substring(0, 8)}</p>
                    </div>
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
+                  {c.status === 2 && (
+                    <span className="hidden lg:flex items-center gap-2 text-[9px] font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 animate-pulse uppercase tracking-widest">
+                      ⭐ กรุณาประเมินผล
+                    </span>
+                  )}
                   <span className={`hidden sm:inline-block px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${STATUS_STYLES[c.status]} border border-current/10 shadow-sm`}>
                     {STATUS_LABELS[c.status]}
                   </span>

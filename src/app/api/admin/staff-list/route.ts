@@ -9,21 +9,35 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { faculty, major } = session.user as any;
+  const { role, faculty, major } = session.user as any;
 
-  // ดึงรายชื่อเจ้าหน้าที่ (Role 1) ในสังกัดเดียวกัน
+  // ถ้าเป็น Operator (2) หรือ Admin (3) ให้เห็นทุกคน เพื่อโยนงานข้ามคณะได้
+  // ถ้าเป็น Teacher (1) ให้เห็นเฉพาะในสาขาตัวเอง (หรือตามที่ระบบเดิมวางไว้)
+  const whereClause: any = {};
+  
+  if (role < 2) {
+    if (faculty) whereClause.faculty = faculty;
+    if (major) whereClause.major = major;
+    whereClause.role = 1; // อาจารย์ทั่วไปเห็นเฉพาะอาจารย์
+  } else {
+    // Operator/Admin เห็น Role 1 (อาจารย์) และ Role 2 (ผู้ดำเนินการคนอื่น)
+    whereClause.role = { in: [1, 2] };
+  }
+
   const staffMembers = await prisma.staff.findMany({
-    where: {
-      role: 1,
-      faculty: faculty || undefined,
-      major: major || undefined,
-    },
+    where: whereClause,
     select: {
       id: true,
       name: true,
       faculty: true,
       major: true,
-    }
+      role: true,
+    },
+    orderBy: [
+      { faculty: 'asc' },
+      { major: 'asc' },
+      { name: 'asc' }
+    ]
   });
 
   return NextResponse.json({ staffMembers });

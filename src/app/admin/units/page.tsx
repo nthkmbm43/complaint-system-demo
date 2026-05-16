@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import ModalAlert from "@/components/ModalAlert";
+import Swal from "sweetalert2";
 
 interface OrgUnit {
   Unit_id: number;
@@ -77,6 +78,19 @@ export default function AdminUnitsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const result = await Swal.fire({
+      title: `ยืนยันการ${editingUnit ? "แก้ไข" : "เพิ่ม"}ข้อมูลหน่วยงาน`,
+      text: "คุณต้องการบันทึกข้อมูลใช่หรือไม่?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+      customClass: { popup: 'rounded-[2rem]', confirmButton: 'px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-green-500/30 transition-all', cancelButton: 'px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-red-500/30 transition-all' },
+      buttonsStyling: false
+    });
+    if (!result.isConfirmed) return;
+
     setSaving(true);
     const method = editingUnit ? "PATCH" : "POST";
     
@@ -299,7 +313,11 @@ export default function AdminUnitsPage() {
 
               <div className="flex gap-4 pt-4">
                 <button type="button" onClick={closeModal} className="flex-1 py-5 bg-slate-100 text-slate-600 font-black rounded-2xl uppercase tracking-widest text-xs">ยกเลิก</button>
-                <button type="submit" disabled={saving} className="flex-1 py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-600/20 uppercase tracking-widest text-xs disabled:opacity-50">
+                <button 
+                  type="submit" 
+                  disabled={saving} 
+                  className="flex-1 py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-600/20 uppercase tracking-widest text-xs disabled:opacity-50"
+                >
                   {saving ? "กำลังบันทึก..." : editingUnit ? "💾 บันทึกการแก้ไข" : "🚀 เพิ่มหน่วยงาน"}
                 </button>
               </div>

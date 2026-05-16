@@ -262,6 +262,7 @@ export default function AdminComplaintsPage() {
                   <th className="text-left px-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">ผู้ยื่นคำร้อง</th>
                   <th className="text-left px-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">หมวดหมู่ / วันที่</th>
                   <th className="text-left px-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">ความเร่งด่วน</th>
+                  <th className="text-left px-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">ผู้รับผิดชอบ</th>
                   <th className="text-left px-4 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">สถานะปัจจุบัน</th>
                   <th className="px-8 py-5"></th>
                 </tr>
@@ -311,6 +312,21 @@ export default function AdminComplaintsPage() {
                         <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${priority.color} bg-slate-50 border border-current/10`}>
                           {priority.label}
                         </span>
+                      </td>
+                      <td className="px-4 py-5">
+                        {c.assignedStaff ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-[10px] font-black border border-indigo-100">
+                              {c.assignedStaff.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-700 leading-tight">{c.assignedStaff.name}</p>
+                              <p className="text-[9px] text-slate-400 font-medium">{(c as any).assignedStaff.major || (c as any).assignedStaff.faculty || "ส่วนกลาง"}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] font-bold text-slate-300 italic">ยังไม่มอบหมาย</span>
+                        )}
                       </td>
                       <td className="px-4 py-5">
                         <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${status.bg} ${status.color} border border-current/5 shadow-sm`}>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import StatusProgressBar from "@/components/StatusProgressBar";
 import Link from "next/link";
 import ModalAlert from "@/components/ModalAlert";
+import Swal from "sweetalert2";
 import { COMPLAINT_TYPES } from "@/lib/constants";
 
 const STATUS_CONFIG: Record<number, { label: string; color: string; bg: string; barColor: string }> = {
@@ -123,6 +124,19 @@ export default function StudentComplaintDetailPage() {
   const handleEvaluate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!evalScore) return setMsg({ type: "warning", title: "กรุณาเลือกคะแนน", text: "กรุณาเลือกคะแนน 1-5 ดาวเพื่อส่งการประเมิน" });
+
+    const result = await Swal.fire({
+      title: "ยืนยันการส่งผลการประเมิน?",
+      text: "คุณไม่สามารถกลับมาแก้ไขได้",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ส่งผลประเมิน",
+      cancelButtonText: "ยกเลิก",
+      customClass: { popup: 'rounded-[2rem]', confirmButton: 'px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-green-500/30 transition-all', cancelButton: 'px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-red-500/30 transition-all' },
+      buttonsStyling: false
+    });
+    if (!result.isConfirmed) return;
+
     setEvalSaving(true);
 
     const res = await fetch(`/api/complaints/${params.id}/evaluate`, {
@@ -158,6 +172,17 @@ export default function StudentComplaintDetailPage() {
 
   const [zoomImage, setZoomImage] = useState<string | null>(null);
   const isImage = (url: string) => url.startsWith("data:image") || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(url);
+  
+  const parseAttachments = (attachment: string | null) => {
+    if (!attachment) return [];
+    try {
+      const parsed = JSON.parse(attachment);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // Legacy single file
+    }
+    return [attachment];
+  };
 
   if (loading) {
     return (
@@ -222,6 +247,11 @@ export default function StudentComplaintDetailPage() {
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-3 mb-4">
+              {complaint.status === 2 && (
+                <span className="flex items-center gap-2 text-[9px] font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 animate-pulse uppercase tracking-widest">
+                  ⭐ กรุณาประเมินผล
+                </span>
+              )}
               <span className={`text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest ${status.bg} ${status.color} border border-current/10`}>
                 {status.label}
               </span>
@@ -269,23 +299,27 @@ export default function StudentComplaintDetailPage() {
           <p className="text-slate-700 leading-relaxed text-lg whitespace-pre-wrap">
             {complaint.description}
           </p>
-          {complaint.attachment && (
+          {complaint.attachment && parseAttachments(complaint.attachment).length > 0 && (
             <div className="mt-8 pt-8 border-t border-slate-200/50">
               <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Attachments</h4>
-              <div className="p-2 bg-white rounded-2xl border border-slate-200 inline-block shadow-sm">
-                {isImage(complaint.attachment) ? (
-                  <div className="relative group cursor-zoom-in" onClick={() => setZoomImage(complaint.attachment)}>
-                    <img src={complaint.attachment} alt="Evidence" className="max-w-full h-auto rounded-xl max-h-96 shadow-sm transition-transform group-hover:scale-[1.02]" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-xl flex items-center justify-center">
-                      <span className="bg-white/90 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">Click to Zoom</span>
-                    </div>
+              <div className="flex flex-wrap gap-4">
+                {parseAttachments(complaint.attachment).map((fileUrl: string, idx: number) => (
+                  <div key={idx} className="p-2 bg-white rounded-2xl border border-slate-200 inline-block shadow-sm">
+                    {isImage(fileUrl) ? (
+                      <div className="relative group cursor-zoom-in" onClick={() => setZoomImage(fileUrl)}>
+                        <img src={fileUrl} alt={`Evidence ${idx + 1}`} className="max-w-full w-48 object-cover rounded-xl h-32 shadow-sm transition-transform group-hover:scale-[1.02]" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-xl flex items-center justify-center">
+                          <span className="bg-white/90 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">Click to Zoom</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <a href={fileUrl} download={`Evidence_${idx+1}`} className="px-6 py-4 flex flex-col items-center gap-2 text-indigo-600 font-bold hover:bg-indigo-50 rounded-xl transition-all">
+                        <span className="text-4xl">📄</span>
+                        <span className="text-[10px] uppercase tracking-widest">Document {idx+1}</span>
+                      </a>
+                    )}
                   </div>
-                ) : (
-                  <a href={complaint.attachment} download className="px-6 py-4 flex items-center gap-3 text-indigo-600 font-bold hover:bg-indigo-50 rounded-xl transition-all">
-                    <span className="text-2xl">📄</span>
-                    <span>Download Evidence File</span>
-                  </a>
-                )}
+                ))}
               </div>
             </div>
           )}
@@ -327,6 +361,21 @@ export default function StudentComplaintDetailPage() {
                     <p className="text-sm text-slate-700 font-medium leading-relaxed">
                       {history.note || `Changed status to ${hStatus.label}`}
                     </p>
+                    {history.attachment && parseAttachments(history.attachment).length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {parseAttachments(history.attachment).map((fileUrl: string, idx: number) => (
+                          <div key={idx} className="relative group cursor-zoom-in" onClick={() => setZoomImage(fileUrl)}>
+                            {isImage(fileUrl) ? (
+                              <img src={fileUrl} alt={`Staff Evidence ${idx + 1}`} className="w-16 h-16 object-cover rounded-lg border border-slate-200 shadow-sm transition-transform hover:scale-105" />
+                            ) : (
+                              <a href={fileUrl} download={`Staff_Evidence_${idx+1}`} className="w-16 h-16 bg-white border border-slate-200 rounded-lg flex flex-col items-center justify-center text-indigo-600 hover:bg-indigo-50 transition-colors">
+                                <span className="text-xl">📄</span>
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <div className="mt-4 pt-3 border-t border-black/5">
                       <span className={`text-[9px] font-black uppercase tracking-widest ${hStatus.color} opacity-60`}>
                         Phase: {hStatus.label}
@@ -352,6 +401,17 @@ export default function StudentComplaintDetailPage() {
                 const form = e.target as HTMLFormElement;
                 const note = (form.elements.namedItem("note") as HTMLTextAreaElement).value;
                 if (!note.trim()) return;
+
+                const result = await Swal.fire({
+                  title: "ยืนยันการส่งข้อความตอบโต้?",
+                  icon: "question",
+                  showCancelButton: true,
+                  confirmButtonText: "ส่งข้อความ",
+                  cancelButtonText: "ยกเลิก",
+                  customClass: { popup: 'rounded-[2rem]', confirmButton: 'px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-green-500/30 transition-all', cancelButton: 'px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-red-500/30 transition-all' },
+                  buttonsStyling: false
+                });
+                if (!result.isConfirmed) return;
 
                 const res = await fetch(`/api/complaints/${complaint.id}`, {
                   method: "PATCH",
@@ -387,15 +447,32 @@ export default function StudentComplaintDetailPage() {
         )}
       </div>
 
-      {/* ส่วนประเมินผลการบริการ (แสดงเฉพาะเมื่อสถานะ = เสร็จสิ้น) */}
-      {complaint.status === 3 && (
-        <div className="bg-amber-50 rounded-[2.5rem] border border-amber-200 p-10 shadow-sm relative overflow-hidden group">
+      {/* ส่วนประเมินผลการบริการ (แสดงเมื่อสถานะ = รอประเมิน หรือ เสร็จสิ้น) */}
+      {(complaint.status === 2 || complaint.status === 3) && (
+        <div className={`rounded-[2.5rem] border p-10 shadow-sm relative overflow-hidden group transition-all duration-500 ${
+          complaint.status === 2 
+            ? "bg-gradient-to-br from-amber-50 via-white to-orange-50 border-amber-200 shadow-xl shadow-amber-200/20 ring-4 ring-amber-500/5 scale-[1.02]" 
+            : "bg-white border-slate-100 opacity-80"
+        }`}>
+          {complaint.status === 2 && (
+             <div className="absolute top-4 right-10 flex gap-1">
+                <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce delay-0" />
+                <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce delay-150" />
+                <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce delay-300" />
+             </div>
+          )}
           <div className="absolute top-0 right-0 p-10 opacity-10 transform scale-150 group-hover:scale-[1.8] transition-transform duration-700">⭐</div>
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-14 h-14 bg-amber-400 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-amber-400/20">⭐</div>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-lg transition-transform group-hover:rotate-12 ${
+              complaint.status === 2 ? "bg-amber-400 text-white shadow-amber-400/30" : "bg-slate-100 text-slate-400 shadow-none"
+            }`}>⭐</div>
             <div>
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight">ประเมินความพึงพอใจ</h3>
-              <p className="text-xs font-bold text-amber-600 uppercase tracking-widest">How was our service?</p>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight">
+                {complaint.status === 2 ? "ช่วยประเมินความพึงพอใจให้เราหน่อย" : "ผลการประเมินความพึงพอใจ"}
+              </h3>
+              <p className={`text-xs font-bold uppercase tracking-widest ${complaint.status === 2 ? "text-amber-600" : "text-slate-400"}`}>
+                {complaint.status === 2 ? "How was our service? Your feedback matters!" : "Thank you for your feedback"}
+              </p>
             </div>
           </div>
 

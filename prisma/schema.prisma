@@ -82,6 +82,7 @@ model ComplaintHistory {
   complaint    Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
   status       Int       // สถานะ ณ เวลานั้น
   note         String?   // บันทึกเพิ่มเติมจากเจ้าหน้าที่
+  attachment   String?   // ไฟล์แนบเพิ่มเติม (JSON String ของ base64 หรือ URL)
   
   actionById   String?   // ผู้ดำเนินการเปลี่ยนสถานะ (ถ้ามี)
   actionBy     Staff?    @relation(fields: [actionById], references: [id])

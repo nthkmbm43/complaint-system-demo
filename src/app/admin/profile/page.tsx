@@ -69,7 +69,7 @@ export default function AdminProfilePage() {
         setForm(prev => ({ ...prev, currentPassword: "", newPassword: "", confirmPassword: "" }));
         setBackupForm({ ...form });
         setIsEditing(false);
-        await update();
+        await update({ name: form.name, email: form.email });
       }
     } catch (err) {
       setMsg({ type: "error", text: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้" });

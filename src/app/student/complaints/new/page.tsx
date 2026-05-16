@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ModalAlert from "@/components/ModalAlert";
+import Swal from "sweetalert2";
 import { COMPLAINT_TYPES } from "@/lib/constants";
 import { CategoryIcon } from "@/components/Icons";
 
@@ -18,22 +19,37 @@ export default function NewComplaintPage() {
   });
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "" as any, title: "", text: "" });
-  const [fileName, setFileName] = useState("");
+  const [fileNames, setFileNames] = useState<string[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    let validFiles = [];
+    let base64s = [];
+    let names = [];
+    
+    for (const file of files) {
       if (file.size > 5 * 1024 * 1024) {
-        setMsg({ type: "error", title: "ไฟล์มีขนาดใหญ่เกินไป", text: "ขนาดไฟล์ต้องไม่เกิน 5MB" });
+        setMsg({ type: "error", title: "ไฟล์มีขนาดใหญ่เกินไป", text: "ขนาดไฟล์ต้องไม่เกิน 5MB ต่อไฟล์" });
         return;
       }
-      setFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm({ ...form, attachment: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+      validFiles.push(file);
+      names.push(file.name);
     }
+    
+    setFileNames(names);
+    
+    for (const file of validFiles) {
+      const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+      base64s.push(base64);
+    }
+    
+    setForm({ ...form, attachment: JSON.stringify(base64s) });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +58,25 @@ export default function NewComplaintPage() {
 
     if (!form.type) {
       setMsg({ type: "warning", title: "ข้อมูลไม่ครบถ้วน", text: "กรุณาเลือกหมวดหมู่ข้อร้องเรียน" });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "ยืนยันการส่งเรื่องร้องเรียน?",
+      text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "ส่งเรื่องร้องเรียน",
+      cancelButtonText: "ยกเลิก",
+      customClass: {
+        popup: 'rounded-[2rem]',
+        confirmButton: 'px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-green-500/30 transition-all',
+        cancelButton: 'px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-red-500/30 transition-all'
+      },
+      buttonsStyling: false
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 
@@ -188,40 +223,44 @@ export default function NewComplaintPage() {
                 <label className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl shadow-sm cursor-pointer hover:bg-indigo-50 transition flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   อัปโหลดไฟล์
-                  <input type="file" accept=".pdf,image/*" onChange={handleFileChange} className="hidden" />
+                  <input type="file" accept=".pdf,image/*" multiple onChange={handleFileChange} className="hidden" />
                 </label>
-                {fileName ? (
-                  <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-bold">
-                    ✅ {fileName}
+                {fileNames.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {fileNames.map((name, i) => (
+                      <div key={i} className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-bold">
+                        ✅ {name}
+                      </div>
+                    ))}
                   </div>
                 ) : (
-                  <span className="text-slate-400 text-sm">ไม่เกิน 5MB (PDF, JPG, PNG)</span>
+                  <span className="text-slate-400 text-sm">เลือกได้หลายไฟล์ ไม่เกิน 5MB ต่อไฟล์ (PDF, JPG, PNG)</span>
                 )}
               </div>
 
               {form.attachment && (
-                <div className="relative group w-full sm:w-64 animate-in zoom-in-95 duration-300">
-                  <div className="p-3 bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-                    {form.attachment.startsWith("data:image") ? (
-                      <img src={form.attachment} alt="Preview" className="w-full h-40 object-cover rounded-2xl" />
-                    ) : (
-                      <div className="w-full h-40 bg-slate-50 rounded-2xl flex flex-col items-center justify-center gap-2">
-                        <span className="text-4xl">📄</span>
-                        <span className="text-[10px] font-black text-slate-400 uppercase">PDF Document</span>
+                <div className="flex flex-wrap gap-4 mt-4">
+                  {JSON.parse(form.attachment).map((fileData: string, i: number) => (
+                    <div key={i} className="relative group w-full sm:w-64 animate-in zoom-in-95 duration-300">
+                      <div className="p-3 bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+                        {fileData.startsWith("data:image") ? (
+                          <img src={fileData} alt={`Preview ${i+1}`} className="w-full h-40 object-cover rounded-2xl" />
+                        ) : (
+                          <div className="w-full h-40 bg-slate-50 rounded-2xl flex flex-col items-center justify-center gap-2">
+                            <span className="text-4xl">📄</span>
+                            <span className="text-[10px] font-black text-slate-400 uppercase">PDF Document</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => { setForm({ ...form, attachment: "" }); setFileName(""); }}
-                      className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-red-600 transition-all transform hover:scale-110 active:scale-95 z-20"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-                    <div className="mt-3 px-2 flex items-center justify-between">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attachment Preview</span>
-                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                     </div>
-                  </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => { setForm({ ...form, attachment: "" }); setFileNames([]); }}
+                    className="h-10 w-10 mt-2 bg-red-100 text-red-600 rounded-full flex items-center justify-center hover:bg-red-200 transition"
+                  >
+                    🗑️
+                  </button>
                 </div>
               )}
             </div>

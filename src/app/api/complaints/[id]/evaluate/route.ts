@@ -42,9 +42,9 @@ export async function POST(
     );
   }
 
-  if (complaint.status !== 3) {
+  if (complaint.status !== 2) {
     return NextResponse.json(
-      { error: "สามารถประเมินผลได้เฉพาะคำร้องที่เสร็จสิ้นแล้วเท่านั้น" },
+      { error: "สามารถประเมินผลได้เฉพาะคำร้องที่อยู่ระหว่างรอประเมินเท่านั้น" },
       { status: 400 }
     );
   }
@@ -56,13 +56,27 @@ export async function POST(
     );
   }
 
-  const evaluation = await prisma.evaluation.create({
-    data: {
-      complaintId: id,
-      score: Number(score),
-      comment: comment || null,
-    },
-  });
+  // Transaction to create evaluation and update complaint status
+  const [evaluation] = await prisma.$transaction([
+    prisma.evaluation.create({
+      data: {
+        complaintId: id,
+        score: Number(score),
+        comment: comment || null,
+      },
+    }),
+    prisma.complaint.update({
+      where: { id },
+      data: { status: 3 },
+    }),
+    prisma.complaintHistory.create({
+      data: {
+        complaintId: id,
+        status: 3,
+        note: `ปิดงานอัตโนมัติ: นักศึกษาทำการประเมินผลความพึงพอใจ (คะแนน: ${score})`,
+      }
+    })
+  ]);
 
   return NextResponse.json({ success: true, evaluation }, { status: 201 });
 }

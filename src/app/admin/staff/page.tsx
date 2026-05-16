@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import ModalAlert from "@/components/ModalAlert";
+import Swal from "sweetalert2";
 
 interface OrgUnit {
   Unit_id: number;
@@ -107,6 +108,19 @@ export default function StaffManagementPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const result = await Swal.fire({
+      title: `ยืนยันการ${editingStaff ? "แก้ไข" : "เพิ่ม"}ข้อมูลเจ้าหน้าที่`,
+      text: "คุณต้องการบันทึกข้อมูลใช่หรือไม่?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+      customClass: { popup: 'rounded-[2rem]', confirmButton: 'px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-green-500/30 transition-all', cancelButton: 'px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold mx-2 shadow-lg shadow-red-500/30 transition-all' },
+      buttonsStyling: false
+    });
+    if (!result.isConfirmed) return;
+
     setSaving(true);
     const url = editingStaff ? `/api/admin/staff/${editingStaff.id}` : "/api/admin/staff";
     const method = editingStaff ? "PATCH" : "POST";
@@ -247,7 +261,11 @@ export default function StaffManagementPage() {
 
                 <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t border-slate-50">
                   <button type="button" onClick={closeModal} className="flex-1 py-5 bg-slate-50 text-slate-400 font-black rounded-2xl hover:bg-slate-100 transition-all text-xs tracking-widest">ยกเลิกและย้อนกลับ</button>
-                  <button type="submit" disabled={saving} className="flex-[2] py-5 bg-slate-900 text-white font-black rounded-2xl transition-all text-xs tracking-widest shadow-2xl shadow-slate-900/30 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95">
+                  <button 
+                    type="submit" 
+                    disabled={saving} 
+                    className="flex-[2] py-5 bg-slate-900 text-white font-black rounded-2xl transition-all text-xs tracking-widest shadow-2xl shadow-slate-900/30 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+                  >
                      <span className="text-xl">🛡️</span>
                      <span>{saving ? "กำลังดำเนินการ..." : editingStaff ? "ยืนยันการบันทึกข้อมูล" : "ยืนยันเพิ่มเจ้าหน้าที่"}</span>
                   </button>

@@ -27,12 +27,13 @@ export async function sendStatusEmail(
     if (statusCode === 1) {
        statusDescription = "ทางเราได้รับเรื่องร้องเรียนของคุณแล้ว และเจ้าหน้าที่กำลังเร่งดำเนินการแก้ไขปัญหาเบื้องต้นครับ";
     } else if (statusCode === 2) {
-       statusDescription = "เย้! 🎉 ปัญหาของคุณได้รับการแก้ไขและดำเนินการเสร็จสิ้นเรียบร้อยแล้ว หวังว่าคุณจะพึงพอใจกับการบริการของเรานะครับ";
-    } else if (statusCode === 3) {
+       statusDescription = "เย้! 🎉 ปัญหาของคุณได้รับการแก้ไขและดำเนินการเสร็จสิ้นเรียบร้อยแล้ว กรุณาเข้าสู่ระบบเพื่อทำการประเมินความพึงพอใจด้วยนะครับ";
+    } else if (statusCode === 4) {
        statusDescription = "ขออภัยด้วยครับ 😔 เรื่องร้องเรียนของคุณถูกปฏิเสธ หากมีข้อสงสัยสามารถติดต่อเจ้าหน้าที่เพิ่มเติมได้ครับ";
     }
 
-    const complaintLink = complaintId ? `${process.env.NEXTAUTH_URL}/student/complaints/${complaintId}` : `${process.env.NEXTAUTH_URL}/student/dashboard`;
+    const baseUrl = "https://complaint-system-demo.vercel.app";
+    const complaintLink = complaintId ? `${baseUrl}/student/complaints/${complaintId}` : `${baseUrl}/student/dashboard`;
 
     let attachmentHtml = "";
     if (attachmentUrl && attachmentUrl.startsWith("data:image")) {

@@ -78,7 +78,7 @@ export default function StudentProfilePage() {
         setForm(prev => ({ ...prev, currentPassword: "", newPassword: "", confirmPassword: "" }));
         setBackupForm({ ...form });
         setIsEditing(false);
-        await update();
+        await update({ name: form.name, email: form.email, faculty: form.faculty, major: form.major });
       }
     } catch (err) {
       setMsg({ type: "error", title: "ข้อผิดพลาด", text: "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้" });

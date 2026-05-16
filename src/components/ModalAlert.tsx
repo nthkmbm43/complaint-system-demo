@@ -97,19 +97,14 @@ export default function ModalAlert({
           {showCancel && (
             <button
               onClick={onCancel}
-              className="flex-1 px-6 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-95"
+              className="flex-1 px-6 py-4 bg-red-50 text-red-600 font-bold rounded-2xl hover:bg-red-100 transition-all active:scale-95 border border-red-100"
             >
               {cancelText}
             </button>
           )}
           <button
             onClick={onConfirm}
-            className={`flex-1 px-6 py-4 font-bold rounded-2xl shadow-lg transition-all active:scale-95 ${
-              type === 'success' ? 'bg-emerald-500 text-white shadow-emerald-500/20 hover:bg-emerald-600' :
-              type === 'error' ? 'bg-rose-500 text-white shadow-rose-500/20 hover:bg-rose-600' :
-              type === 'warning' ? 'bg-amber-500 text-white shadow-amber-500/20 hover:bg-amber-600' :
-              'bg-indigo-600 text-white shadow-indigo-500/20 hover:bg-indigo-700'
-            }`}
+            className={`flex-1 px-6 py-4 font-bold rounded-2xl shadow-lg transition-all active:scale-95 bg-green-500 text-white shadow-green-500/20 hover:bg-green-600`}
           >
             {confirmText}
           </button>

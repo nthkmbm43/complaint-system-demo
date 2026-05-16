@@ -56,16 +56,16 @@ export default function AdminAssignmentsPage() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h2 className="text-3xl font-black text-slate-800 tracking-tight">
-              {(session?.user as any).role === 3 ? "ตรวจสอบภารกิจทั้งหมด" : "งานที่ได้รับมอบหมาย"}
+              {(session?.user as any)?.role === 3 ? "ตรวจสอบภารกิจทั้งหมด" : "งานที่ได้รับมอบหมาย"}
             </h2>
-            {(session?.user as any).role === 3 && (
+            {(session?.user as any)?.role === 3 && (
               <span className="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest shadow-lg shadow-indigo-600/20">
                 System Oversight
               </span>
             )}
           </div>
           <p className="text-slate-500 text-sm">
-            {(session?.user as any).role === 3 
+            {(session?.user as any)?.role === 3 
               ? "ภาพรวมการดำเนินงานและสถานะข้อร้องเรียนของเจ้าหน้าที่ทุกคนในระบบ" 
               : "ภารกิจและข้อร้องเรียนที่คุณได้รับมอบหมายให้ดำเนินการ"}
           </p>
@@ -133,7 +133,9 @@ export default function AdminAssignmentsPage() {
                   return (
                     <tr key={c.id} className="hover:bg-indigo-50/30 transition-all group">
                       <td className="px-8 py-5">
-                        <p className="font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors leading-tight">{c.title}</p>
+                        <Link href={`/admin/complaints/${c.id}`}>
+                          <p className="font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors leading-tight cursor-pointer">{c.title}</p>
+                        </Link>
                         <p className="text-[9px] font-mono text-slate-400 uppercase tracking-[0.2em]">{c.id.substring(0, 16)}...</p>
                       </td>
                       <td className="px-4 py-5">
